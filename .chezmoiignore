@@ -1,10 +1,10 @@
 {{- if ne .machine "countercheck" }}
 .aerospace.toml
-.spectrwm/*
-.spectrwm.conf
 {{- end }}
 
 {{- if ne .machine "lifeform" }}
+.spectrwm/
+.spectrwm.conf
 .xinitrc
 .Xresources
 {{- end }}
