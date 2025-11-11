@@ -322,7 +322,9 @@ function! UsefulMappings()
   nnoremap <Leader>y "*y
   vnoremap <Leader>y "*y
 
+  {{- if eq .chezmoi.hostname "countercheck" }}
   nnoremap <Leader>y% :let @*="https://github.com/ChessCom/chess/tree/develop/" . expand('%') . "#L" . line(".")<CR>
+  {{- end }}
 
   nnoremap <Leader>dd 0D
 
