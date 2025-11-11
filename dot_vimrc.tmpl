@@ -51,7 +51,7 @@ function! Defaults()
 
   set path+=**
 
-  set grepprg=git\ grep\ -n\ $*\ --\ ':!*translations*'\ ':!*js_routes*'\ ':!*release-history.md*'
+  set grepprg=git\ grep\ -n\ $*
 
   syntax on
   set regexpengine=0
@@ -194,7 +194,9 @@ function! Path()
   if pwd =~ "Workspace/chess"
     let pathsWeCareAbout = ["/client/web/**", "/client/shared/**", "/client/tests/**", "/client/types/**", "/src/Chess/WebBundle/**", "/src/Chess/CoreBundle/**"]
     let &path = join(map(pathsWeCareAbout, { i, path -> pwd .. path}), ',')
+
     set includeexpr=IgnoreFirstDirectory(v:fname)
+    set grepprg=git\ grep\ -n\ $*\ --\ ':!*translations*'\ ':!*js_routes*'\ ':!*release-history.md*'
   endif
 endfunction
 {{- end }}
