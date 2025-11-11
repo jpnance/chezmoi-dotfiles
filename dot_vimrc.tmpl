@@ -177,6 +177,7 @@ function! Indentation()
   set smartindent
 endfunction
 
+{{- if eq .chezmoi.hostname "countercheck" }}
 function! Path()
   function! IgnoreFirstDirectory(fname)
     return join(split(a:fname, '/')[1:], '/')
@@ -190,6 +191,7 @@ function! Path()
     set includeexpr=IgnoreFirstDirectory(v:fname)
   endif
 endfunction
+{{- end }}
 
 function! StatusLine()
   augroup statusLine
@@ -351,7 +353,9 @@ call Defaults()
 call Git()
 call Gui()
 call Indentation()
+{{- if eq .chezmoi.hostname "countercheck" }}
 call Path()
+{{- end }}
 call StatusLine()
 call TabCompletion()
 call UsefulMappings()
