@@ -1,3 +1,8 @@
 {{- if ne .chezmoi.hostname "countercheck" }}
 .aerospace.toml
 {{- end }}
+
+{{- if ne .chezmoi.hostname "lifeform" }}
+.xinitrc
+.Xresources
+{{- end }}
