@@ -170,7 +170,7 @@ function! Gui()
 endfunction
 
 function! Indentation()
-  {{- if eq .chezmoi.hostname "countercheck" }}
+  {{- if eq .machine "countercheck" }}
   set tabstop=2
   set shiftwidth=2
   set expandtab
@@ -183,7 +183,7 @@ function! Indentation()
   set smartindent
 endfunction
 
-{{- if eq .chezmoi.hostname "countercheck" }}
+{{- if eq .machine "countercheck" }}
 function! Path()
   function! IgnoreFirstDirectory(fname)
     return join(split(a:fname, '/')[1:], '/')
@@ -317,7 +317,7 @@ function! UsefulMappings()
   nnoremap <Leader>y "*y
   vnoremap <Leader>y "*y
 
-  {{- if eq .chezmoi.hostname "countercheck" }}
+  {{- if eq .machine "countercheck" }}
   nnoremap <Leader>y% :let @*="https://github.com/ChessCom/chess/tree/develop/" . expand('%') . "#L" . line(".")<CR>
   {{- end }}
 
@@ -344,7 +344,7 @@ call Defaults()
 call Git()
 call Gui()
 call Indentation()
-{{- if eq .chezmoi.hostname "countercheck" }}
+{{- if eq .machine "countercheck" }}
 call Path()
 {{- end }}
 call StatusLine()

@@ -1,10 +1,10 @@
-{{- if ne .chezmoi.hostname "countercheck" }}
+{{- if ne .machine "countercheck" }}
 .aerospace.toml
 .spectrwm/*
 .spectrwm.conf
 {{- end }}
 
-{{- if ne .chezmoi.hostname "lifeform" }}
+{{- if ne .machine "lifeform" }}
 .xinitrc
 .Xresources
 {{- end }}
