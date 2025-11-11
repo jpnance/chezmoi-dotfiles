@@ -170,9 +170,15 @@ function! Gui()
 endfunction
 
 function! Indentation()
+  {{- if eq .chezmoi.hostname "countercheck" }}
   set tabstop=2
   set shiftwidth=2
   set expandtab
+  {{- else }}
+  set tabstop=4
+  set shiftwidth=4
+  set noexpandtab
+  {{- end }}
   set autoindent
   set smartindent
 endfunction
