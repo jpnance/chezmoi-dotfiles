@@ -200,23 +200,6 @@ endfunction
 {{- end }}
 
 function! StatusLine()
-  augroup statusLine
-    autocmd!
-    " use when using jellybeans color scheme
-    "autocmd InsertEnter * :highlight StatusLine ctermfg=16 ctermbg=251 guibg=#ffffff guifg=#333333
-    "autocmd InsertLeave * :highlight StatusLine ctermfg=231 ctermbg=239 guibg=#555555 guifg=#ffffff
-
-    " use when using quiet color scheme
-    "autocmd InsertEnter * :highlight StatusLine cterm=reverse
-    "autocmd InsertLeave * :highlight StatusLine cterm=bold
-  augroup END
-
-  function! IsCurrentBufferModified()
-    let currentBufferInfo = getbufinfo(bufname())
-
-    return currentBufferInfo[0].changed
-  endfunction
-
   " Very useful links for this stuff
   " http://got-ravings.blogspot.com/2008/08/vim-pr0n-making-statuslines-that-own.html
   " https://shapeshed.com/vim-statuslines/
