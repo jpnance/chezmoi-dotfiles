@@ -1,5 +1,7 @@
 {{- if ne .chezmoi.hostname "countercheck" }}
 .aerospace.toml
+.spectrwm/*
+.spectrwm.conf
 {{- end }}
 
 {{- if ne .chezmoi.hostname "lifeform" }}
