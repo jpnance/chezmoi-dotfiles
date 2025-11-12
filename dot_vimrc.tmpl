@@ -36,7 +36,11 @@ function! ColorScheme()
   set t_Co=256
 
   set background=dark
+  {{- if eq .machine "cloudbreak" }}
+  colorscheme blade_runner
+  {{- else }}
   colorscheme quiet
+  {{- end }}
 endfunction
 
 function! Defaults()
