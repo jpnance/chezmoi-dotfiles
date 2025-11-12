@@ -289,6 +289,8 @@ function! UsefulMappings()
 
   let g:mapleader="\<Space>"
 
+  nnoremap <Space> <Nop>
+
   noremap <C-w>x :%!xxd<CR>
   noremap <C-w>X :%!xxd -r<CR>
   noremap <C-w>m :!man ./%<CR>
@@ -337,7 +339,7 @@ function! UsefulMappings()
   nnoremap <Leader>gd :GitDiffDevelopArgs<CR>
   nnoremap <Leader>vd :DiffHere<CR>
 
-  nnoremap <Leader><Esc> :nohlsearch<CR>
+  nnoremap <silent> <Leader><Esc> :nohlsearch<CR>
 
   nnoremap <Leader>b/ ?function<CR>V/{<CR>%<ESC>/\%V
 endfunction
