@@ -291,24 +291,24 @@ function! UsefulMappings()
 
   nnoremap <Space> <Nop>
 
-  noremap <C-w>x :%!xxd<CR>
-  noremap <C-w>X :%!xxd -r<CR>
-  noremap <C-w>m :!man ./%<CR>
-  noremap <C-w>z :tabnew %<CR>
+  noremap <silent> <C-w>x :%!xxd<CR>
+  noremap <silent> <C-w>X :%!xxd -r<CR>
+  noremap <silent> <C-w>m :!man ./%<CR>
+  noremap <silent> <C-w>z :tabnew %<CR>
 
   nnoremap <Leader>b :b 
   nnoremap <Leader>f :find 
 
-  nnoremap <Leader>/ :call GrepAndOpenQF()<CR>
-  nnoremap <Leader>* :grep! <cword><CR><CR>:copen<CR>
-  nnoremap <Leader>cf :call QuickfixFilterInteractive()<CR>
-  nnoremap <Leader>c1 :cfirst<CR>
-  nnoremap <Leader>co :copen<CR>
-  nnoremap <Leader>cc :cclose<CR>
-  nnoremap <Up> :cprevious<CR>
-  nnoremap <Down> :cnext<CR>
-  nnoremap <Left> :colder<CR>
-  nnoremap <Right> :cnewer<CR>
+  nnoremap <silent> <Leader>/ :call GrepAndOpenQF()<CR>
+  nnoremap <silent> <Leader>* :grep! <cword><CR><CR>:copen<CR>
+  nnoremap <silent> <Leader>cf :call QuickfixFilterInteractive()<CR>
+  nnoremap <silent> <Leader>c1 :cfirst<CR>
+  nnoremap <silent> <Leader>co :copen<CR>
+  nnoremap <silent> <Leader>cc :cclose<CR>
+  nnoremap <silent> <Up> :cprevious<CR>
+  nnoremap <silent> <Down> :cnext<CR>
+  nnoremap <silent> <Left> :colder<CR>
+  nnoremap <silent> <Right> :cnewer<CR>
 
   nnoremap <Leader>lo <Nop>
   nnoremap <Leader>lc <Nop>
@@ -324,20 +324,20 @@ function! UsefulMappings()
   vnoremap <Leader>y "*y
 
   {{- if eq .machine "countercheck" }}
-  nnoremap <Leader>y% :let @*="https://github.com/ChessCom/chess/tree/develop/" . expand('%') . "#L" . line(".")<CR>
+  nnoremap <silent> <Leader>y% :let @*="https://github.com/ChessCom/chess/tree/develop/" . expand('%') . "#L" . line(".")<CR>
   {{- end }}
 
   nnoremap <Leader>dd 0D
 
   inoremap <C-C> <Esc>
 
-  nnoremap <Leader>e :e ~/.vimrc<CR>
-  nnoremap <Leader>v :source ~/.vimrc<CR>
+  nnoremap <silent> <Leader>e :e ~/.vimrc<CR>
+  nnoremap <silent> <Leader>v :source ~/.vimrc<CR>
 
   nnoremap <Leader>: :%s/<C-R><C-W>//g<Left><Left>
 
-  nnoremap <Leader>gd :GitDiffDevelopArgs<CR>
-  nnoremap <Leader>vd :DiffHere<CR>
+  nnoremap <silent> <Leader>gd :GitDiffDevelopArgs<CR>
+  nnoremap <silent> <Leader>vd :DiffHere<CR>
 
   nnoremap <silent> <Leader><Esc> :nohlsearch<CR>
 
