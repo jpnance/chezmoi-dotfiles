@@ -8,3 +8,7 @@
 .xinitrc
 .Xresources
 {{- end }}
+
+{{- if ne .machine "sherpa" }}
+.vim/colors/quiet.vim
+{{- end }}
