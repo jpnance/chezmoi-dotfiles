@@ -293,6 +293,21 @@ function! UsefulMappings()
     endif
   endfunction
 
+  {{- if eq .machine "countercheck" }}
+  function! SearchForImports()
+    let l:filename = fnamemodify(expand('%'), ':t:r')
+
+    execute 'silent! grep! import.*' . l:filename
+    redraw!
+
+    if len(getqflist()) > 0
+      copen
+    else
+      echo "No results found."
+    endif
+  endfunction
+  {{- end }}
+
   let g:mapleader="\<Space>"
 
   nnoremap <Space> <Nop>
@@ -325,6 +340,9 @@ function! UsefulMappings()
   " nnoremap <Leader>* :lgrep! <cword><CR><CR>:lopen<CR>
 
   nnoremap <Leader>gf :e client/<cfile>
+  {{- if eq .machine "countercheck" }}
+  nnoremap <silent> <Leader>gi :call SearchForImports()<CR>
+  {{- end }}
 
   nnoremap <Leader>y "*y
   vnoremap <Leader>y "*y
