@@ -10,5 +10,6 @@
 {{- end }}
 
 {{- if ne .machine "sherpa" }}
+.irssi/
 .vim/colors/quiet.vim
 {{- end }}
