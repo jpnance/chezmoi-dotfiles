@@ -18,6 +18,7 @@ alias lint-styles="~/Workspace/chess/client/build/bin/build run ci:lint-styles"
 {{- end }}
 
 HISTCONTROL=ignoredups
+PROMPT_COMMAND=set_bash_prompt
 
 export PATH=$HOME/bin:$PATH
 
