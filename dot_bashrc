@@ -198,6 +198,7 @@ function note() {
 	cd -
 }
 
+{{- if eq .machine "countercheck" }}
 function trans() {
 	grep $* ~/Workspace/chess/app/Resources/assets/js/translations/messages.en_US.json
 }
@@ -294,6 +295,7 @@ function watcher() {
 
 	chess && npx nodemon -d 1 -w ./client -e js,ts,vue --exec "reset && ${command}"
 }
+{{- end }}
 
 PROMPT_COMMAND=set_bash_prompt
 
