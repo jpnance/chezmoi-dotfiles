@@ -67,7 +67,7 @@ servers = (
     address = "localhost";
     chatnet = "efnet-znc";
     port = "3745";
-    password = {{ .efnetZncPassword | quote }};
+    password = "jpnance/efnet:{{ .zncPassword }}";
     use_tls = "yes";
     tls_verify = "no";
   },
@@ -75,7 +75,7 @@ servers = (
     address = "localhost";
     chatnet = "oftc-znc";
     port = "3745";
-    password = {{ .oftcZncPassword | quote }};
+    password = "jpnance/oftc:{{ .zncPassword }}";
     use_tls = "yes";
     tls_verify = "no";
   }
