@@ -16,6 +16,21 @@ alias lint-styles="~/Workspace/chess/client/build/bin/build run ci:lint-styles"
 
 HISTCONTROL=ignoredups
 
+export CLICOLOR=1
+export LSCOLORS=ExGxxxxxCxxxxxxxxxxxxx
+export BASH_SILENCE_DEPRECATION_WARNING=1
+export PATH=/opt/homebrew/bin:$PATH
+
+export CHESS=~/Workspace/chess
+export BATTLE=~/Workspace/chess/client/web/puzzles/modules/puzzle-battle
+export LEGACY=~/Workspace/chess/client/web/puzzles-legacy
+export CORE=~/Workspace/chess/client/web/puzzles/modules/puzzle-core
+export RATED=~/Workspace/chess/client/web/puzzles/modules/puzzle-rated
+export LEARNING=~/Workspace/chess/client/web/puzzles/modules/puzzle-learning
+export RUSH=~/Workspace/chess/client/web/puzzles/modules/puzzle-rush
+export TESTS=~/Workspace/chess/client/tests
+export FIXTURES=~/Workspace/chess/client/tests/cypress/fixtures
+
 BOLD="\[\e[1m\]"
 RESET_COLORS="\[\e[0m\]"
 
@@ -280,19 +295,4 @@ function note() {
 
 PROMPT_COMMAND=set_bash_prompt
 
-export CLICOLOR=1
-export LSCOLORS=ExGxxxxxCxxxxxxxxxxxxx
-export BASH_SILENCE_DEPRECATION_WARNING=1
-export PATH=/opt/homebrew/bin:$PATH
-
 source /Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash
-
-export CHESS=~/Workspace/chess
-export BATTLE=~/Workspace/chess/client/web/puzzles/modules/puzzle-battle
-export LEGACY=~/Workspace/chess/client/web/puzzles-legacy
-export CORE=~/Workspace/chess/client/web/puzzles/modules/puzzle-core
-export RATED=~/Workspace/chess/client/web/puzzles/modules/puzzle-rated
-export LEARNING=~/Workspace/chess/client/web/puzzles/modules/puzzle-learning
-export RUSH=~/Workspace/chess/client/web/puzzles/modules/puzzle-rush
-export TESTS=~/Workspace/chess/client/tests
-export FIXTURES=~/Workspace/chess/client/tests/cypress/fixtures
