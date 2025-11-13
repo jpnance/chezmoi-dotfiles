@@ -341,7 +341,7 @@ function! UsefulMappings()
   {{- if eq .machine "countercheck" }}
   nnoremap <silent> <Leader>gi :call SearchForImports()<CR>
   {{- else }}
-  echo "SearchForImports() is only implemented on countercheck for now"
+  nnoremap <Leader>gi :echo "SearchForImports() is only implemented on countercheck for now"<CR>
   {{- end }}
 
   nnoremap <Leader>y "*y
@@ -350,7 +350,7 @@ function! UsefulMappings()
   {{- if eq .machine "countercheck" }}
   nnoremap <silent> <Leader>y% :let @*="https://github.com/ChessCom/chess/tree/develop/" . expand('%') . "#L" . line(".")<CR>
   {{- else }}
-  echo "Quick GitHub linking is only implemented on countercheck for now"
+  nnoremap <Leader>y% :echo "Quick GitHub linking is only implemented on countercheck for now"<CR>
   {{- end }}
 
   nnoremap <Leader>dd 0D
