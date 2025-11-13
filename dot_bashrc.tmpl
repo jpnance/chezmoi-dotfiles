@@ -39,18 +39,18 @@ RESET_COLORS="\[\e[0m\]"
 
 # get current branch in git repo
 function parse_git_branch() {
-	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
-	OUTPUT=""
+	branch=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+	output=""
 
-	if [ ! "${BRANCH}" == "" ]
+	if [ ! "${branch}" == "" ]
 	then
-		STAT=`parse_git_dirty`
-		OUTPUT="${BRANCH}${STAT}"
+		stat=`parse_git_dirty`
+		output="${branch}${stat}"
 	else
-		OUTPUT=""
+		output=""
 	fi
 
-	echo "$OUTPUT"
+	echo "${output}"
 }
 
 # get current status of git repo
