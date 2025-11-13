@@ -1,0 +1,299 @@
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+
+HISTCONTROL=ignoredups
+
+BOLD="\[\e[1m\]"
+RESET_COLORS="\[\e[0m\]"
+
+# get current branch in git repo
+function parse_git_branch() {
+	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+	OUTPUT=""
+
+	if [ ! "${BRANCH}" == "" ]
+	then
+		STAT=`parse_git_dirty`
+		OUTPUT="${BRANCH}${STAT}"
+	else
+		OUTPUT=""
+	fi
+
+	echo "$OUTPUT"
+}
+
+# get current status of git repo
+function parse_git_dirty {
+	status=`git status 2>&1 | tee`
+	dirty=`echo -n "${status}" 2> /dev/null | grep "modified:" &> /dev/null; echo "$?"`
+	untracked=`echo -n "${status}" 2> /dev/null | grep "Untracked files" &> /dev/null; echo "$?"`
+	ahead=`echo -n "${status}" 2> /dev/null | grep "Your branch is ahead of" &> /dev/null; echo "$?"`
+	newfile=`echo -n "${status}" 2> /dev/null | grep "new file:" &> /dev/null; echo "$?"`
+	renamed=`echo -n "${status}" 2> /dev/null | grep "renamed:" &> /dev/null; echo "$?"`
+	deleted=`echo -n "${status}" 2> /dev/null | grep "deleted:" &> /dev/null; echo "$?"`
+	bits=''
+	if [ "${renamed}" == "0" ]; then
+		bits=">${bits}"
+	fi
+	if [ "${ahead}" == "0" ]; then
+		bits="*${bits}"
+	fi
+	if [ "${newfile}" == "0" ]; then
+		bits="+${bits}"
+	fi
+	if [ "${untracked}" == "0" ]; then
+		bits="?${bits}"
+	fi
+	if [ "${deleted}" == "0" ]; then
+		bits="x${bits}"
+	fi
+	if [ "${dirty}" == "0" ]; then
+		bits="!${bits}"
+	fi
+	if [ ! "${bits}" == "" ]; then
+		echo "${bits}"
+	else
+		echo ""
+	fi
+}
+
+function printPrompt() {
+	SEPARATOR="∵"
+	PREVIOUS_EXIT_CODE=$1
+
+	GIT=$(parse_git_branch)
+	HOST=$(hostname -s)
+
+	TEXT_COLOR_HOST=82
+	TEXT_COLOR_DIRECTORY=81
+	TEXT_COLOR_GIT=171
+	TEXT_COLOR_CHEZMOI=220
+	TEXT_COLOR_GOOD=255
+	TEXT_COLOR_SEPARATOR=245
+
+	PROMPT=""
+
+	if [[ -n "$SSH_CLIENT" ]]; then
+		PROMPT+="$(terminalColor $TEXT_COLOR_HOST)$BOLD$HOST"
+		PROMPT+="$(terminalColor $TEXT_COLOR_SEPARATOR) $SEPARATOR "
+	fi
+
+	if [[ -n "$CHEZMOI" ]]; then
+		PROMPT+="$(terminalColor $TEXT_COLOR_CHEZMOI)${BOLD}chezmoi"
+	else
+		PROMPT+="$(terminalColor $TEXT_COLOR_DIRECTORY)$BOLD$(workingDirectory)"
+	fi
+
+	if [[ -n "$GIT" ]]; then
+		PROMPT+="$(terminalColor $TEXT_COLOR_SEPARATOR) $SEPARATOR "
+		PROMPT+="$(terminalColor $TEXT_COLOR_GIT)$BOLD$GIT"
+	fi
+
+	PROMPT+="${RESET_COLORS}"
+	PROMPT+="$(terminalColor $TEXT_COLOR_GOOD)"
+	PROMPT+=" \\$"
+
+	echo -e "$PROMPT"
+}
+
+function terminalColor() {
+	FOREGROUND="\[\e[38;5;${1}m\]"
+	BACKGROUND="\[\e[48;5;${2}m\]"
+
+	if [[ -z "${1}" ]]; then
+		FOREGROUND="\[\e[38;5;15m\]"
+	fi
+
+	if [[ -z "${2}" || "${2}" -eq "-1" ]]; then
+		BACKGROUND=""
+	fi
+
+	echo ${RESET_COLORS}${FOREGROUND}${BACKGROUND}
+}
+
+function workingDirectory() {
+	HIERARCHY=($(echo $PWD \
+		| sed -e "s|^$HOME|~|" \
+		| sed -e "s| |!SPACE!|g" \
+		| sed -e "s|/| |g"
+	))
+
+	OUTPUT=""
+
+	if (( ${#HIERARCHY[@]} > 0 )); then
+		for i in $(seq 0 $((${#HIERARCHY[@]} - 1))); do
+			if [[ $i -eq 0 && "${HIERARCHY[$i]}" != "~" ]]; then
+				OUTPUT+="/"
+			fi
+
+			if (( $i > 0 )); then
+				OUTPUT+="/"
+			fi
+
+			if (( $i < $((${#HIERARCHY[@]} - 1)) )); then
+				if [[ ${HIERARCHY[$i]:0:1} =~ [^A-Za-z0-9] ]]; then
+					OUTPUT+="${HIERARCHY[$i]:0:2}"
+				else
+					OUTPUT+="${HIERARCHY[$i]:0:1}"
+				fi
+			else
+				OUTPUT+="${HIERARCHY[$i]//!SPACE!/ }"
+			fi
+		done
+	else
+		OUTPUT+="/"
+	fi
+
+	echo -e "$OUTPUT"
+}
+
+function set_bash_prompt() {
+	PS1="$(printPrompt $?)$RESET_COLORS "
+}
+
+function um() {
+	cat ~/um/*$1*
+}
+
+function trans() {
+	grep $* ~/Workspace/chess/app/Resources/assets/js/translations/messages.en_US.json
+}
+
+function route() {
+	grep -Rn $* ~/Workspace/chess/src/Chess/WebBundle/Resources/config/routing/*
+}
+
+function branch() {
+	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+
+	new_branch_name=$(echo $* | sed -e "s/ /-/g")
+
+	if [ "${TICKET}" == "" ]; then
+		read -p "\$TICKET is blank. Create new branch anyway? [y/N]" -n 1 -r -s CHOICE
+		echo
+		echo
+
+		case "${CHOICE}" in
+			y|Y)
+				;;
+
+			n|N|*)
+				return
+				;;
+		esac
+	else
+		new_branch_name="${TICKET}-${new_branch_name}"
+	fi
+
+	git checkout -b PN/${new_branch_name}
+}
+
+function commit() {
+	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+
+	if [ "${TICKET}" == "" ]; then
+		read -p "\$TICKET is blank. Commit anyway? [y/N]" -n 1 -r -s CHOICE
+		echo
+		echo
+
+		case "${CHOICE}" in
+			y|Y)
+				formatted_ticket=""
+				;;
+
+			n|N|*)
+				return
+				;;
+		esac
+	elif [[ ! "${BRANCH}" =~ "${TICKET}" ]]; then
+		read -p "\$TICKET (${TICKET}) doesn't match the branch (${BRANCH}). Commit anyway? [y/N]" -n 1 -r -s CHOICE
+		echo
+		echo
+
+		case "${CHOICE}" in
+			y|Y)
+				formatted_ticket="${TICKET} - "
+				;;
+
+			n|N|*)
+				return
+				;;
+		esac
+	else
+		formatted_ticket="${TICKET} - "
+	fi
+
+	git commit -m "${formatted_ticket}$*"
+}
+
+function ticket() {
+	if [ "$1" == "" ]; then
+		echo $TICKET
+	else
+		export TICKET=$1
+	fi
+}
+
+function chess() {
+	cd ${CHESS}
+}
+
+function watcher() {
+	command=""
+
+	if [ "$1" == "type-check" ]; then
+		command="./client/build/bin/build run type-check"
+	elif [ "$1" == "playwright" ]; then
+		command="cd ~/Workspace/chess/client/tests && npx playwright test --project chromium --reporter dot --retries 2 $2"
+	elif [ "$1" == "linter" ]; then
+		command="cd client; npm run biome -- --write"
+	fi
+
+	chess && npx nodemon -d 1 -w ./client -e js,ts,vue --exec "reset && ${command}"
+}
+
+function note() {
+	daystamp=$(date +%m%d)
+	directory=~/notes/${daystamp}
+
+	mkdir -p ${directory}
+
+	cd ${directory}
+
+	vi $1
+
+	cd -
+}
+
+PROMPT_COMMAND=set_bash_prompt
+
+export CLICOLOR=1
+export LSCOLORS=ExGxxxxxCxxxxxxxxxxxxx
+export BASH_SILENCE_DEPRECATION_WARNING=1
+export PATH=/opt/homebrew/bin:$PATH
+
+source /Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash
+
+export CHESS=~/Workspace/chess
+export BATTLE=~/Workspace/chess/client/web/puzzles/modules/puzzle-battle
+export LEGACY=~/Workspace/chess/client/web/puzzles-legacy
+export CORE=~/Workspace/chess/client/web/puzzles/modules/puzzle-core
+export RATED=~/Workspace/chess/client/web/puzzles/modules/puzzle-rated
+export LEARNING=~/Workspace/chess/client/web/puzzles/modules/puzzle-learning
+export RUSH=~/Workspace/chess/client/web/puzzles/modules/puzzle-rush
+export TESTS=~/Workspace/chess/client/tests
+export FIXTURES=~/Workspace/chess/client/tests/cypress/fixtures
+
+alias compile="~/Workspace/chess/client/build/bin/build compile"
+alias serve-cypress="~/Workspace/chess/client/build/bin/build serve --cypress -u"
+alias serve-docker="~/Workspace/chess/client/build/bin/build serve -u"
+alias type-check="~/Workspace/chess/client/build/bin/build run type-check"
+alias lint-scripts="~/Workspace/chess/client/build/bin/build run ci:lint-scripts"
+alias lint-styles="~/Workspace/chess/client/build/bin/build run ci:lint-styles"
