@@ -9,6 +9,11 @@ augroup filetypeTypescript
   autocmd FileType typescript :setlocal formatoptions-=ro
 augroup END
 
+augroup filetypeSh
+  autocmd!
+  autocmd FileType sh :setlocal noexpandtab tabstop=4 shiftwidth=4
+augroup END
+
 function! AutoReader()
   augroup autoReader
     autocmd!
