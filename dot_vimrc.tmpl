@@ -340,6 +340,8 @@ function! UsefulMappings()
   nnoremap <Leader>gf :e client/<cfile>
   {{- if eq .machine "countercheck" }}
   nnoremap <silent> <Leader>gi :call SearchForImports()<CR>
+  {{- else }}
+  echo "SearchForImports() is only implemented on countercheck for now"
   {{- end }}
 
   nnoremap <Leader>y "*y
@@ -347,6 +349,8 @@ function! UsefulMappings()
 
   {{- if eq .machine "countercheck" }}
   nnoremap <silent> <Leader>y% :let @*="https://github.com/ChessCom/chess/tree/develop/" . expand('%') . "#L" . line(".")<CR>
+  {{- else }}
+  echo "Quick GitHub linking is only implemented on countercheck for now"
   {{- end }}
 
   nnoremap <Leader>dd 0D
