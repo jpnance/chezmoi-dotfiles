@@ -337,14 +337,6 @@ function! UsefulMappings()
   nnoremap <silent> <Left> :colder<CR>
   nnoremap <silent> <Right> :cnewer<CR>
 
-  nnoremap <Leader>lo <Nop>
-  nnoremap <Leader>lc <Nop>
-  nnoremap <Leader>lgr <Nop>
-  " nnoremap <Leader>lo :lopen<CR>
-  " nnoremap <Leader>lc :lclose<CR>
-  " nnoremap <Leader>lgr :lgrep! 
-  " nnoremap <Leader>* :lgrep! <cword><CR><CR>:lopen<CR>
-
   nnoremap <Leader>gf :e client/<cfile>
   {{- if eq .machine "countercheck" }}
   nnoremap <silent> <Leader>gi :call SearchForImports()<CR>
