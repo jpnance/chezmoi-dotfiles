@@ -7,6 +7,12 @@
 
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
+alias compile="~/Workspace/chess/client/build/bin/build compile"
+alias serve-cypress="~/Workspace/chess/client/build/bin/build serve --cypress -u"
+alias serve-docker="~/Workspace/chess/client/build/bin/build serve -u"
+alias type-check="~/Workspace/chess/client/build/bin/build run type-check"
+alias lint-scripts="~/Workspace/chess/client/build/bin/build run ci:lint-scripts"
+alias lint-styles="~/Workspace/chess/client/build/bin/build run ci:lint-styles"
 
 HISTCONTROL=ignoredups
 
@@ -290,10 +296,3 @@ export LEARNING=~/Workspace/chess/client/web/puzzles/modules/puzzle-learning
 export RUSH=~/Workspace/chess/client/web/puzzles/modules/puzzle-rush
 export TESTS=~/Workspace/chess/client/tests
 export FIXTURES=~/Workspace/chess/client/tests/cypress/fixtures
-
-alias compile="~/Workspace/chess/client/build/bin/build compile"
-alias serve-cypress="~/Workspace/chess/client/build/bin/build serve --cypress -u"
-alias serve-docker="~/Workspace/chess/client/build/bin/build serve -u"
-alias type-check="~/Workspace/chess/client/build/bin/build run type-check"
-alias lint-scripts="~/Workspace/chess/client/build/bin/build run ci:lint-scripts"
-alias lint-styles="~/Workspace/chess/client/build/bin/build run ci:lint-styles"
