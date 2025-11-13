@@ -296,8 +296,8 @@ function watcher() {
 
 	chess && npx nodemon -d 1 -w ./client -e js,ts,vue --exec "reset && ${command}"
 }
+
+if [[ -r /Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash ]]; then
+	. /Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash
+fi
 {{- end }}
-
-PROMPT_COMMAND=set_bash_prompt
-
-source /Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash
