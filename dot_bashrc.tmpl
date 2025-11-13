@@ -300,4 +300,8 @@ function watcher() {
 if [[ -r /Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash ]]; then
 	. /Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash
 fi
+
+if [[ -r $HOME/.nvm/nvm.sh ]]; then
+	. $HOME/.nvm/nvm.sh
+fi
 {{- end }}
