@@ -185,6 +185,19 @@ function um() {
 	cat ~/um/*$1*
 }
 
+function note() {
+	daystamp=$(date +%m%d)
+	directory=~/notes/${daystamp}
+
+	mkdir -p ${directory}
+
+	cd ${directory}
+
+	vi $1
+
+	cd -
+}
+
 function trans() {
 	grep $* ~/Workspace/chess/app/Resources/assets/js/translations/messages.en_US.json
 }
@@ -280,19 +293,6 @@ function watcher() {
 	fi
 
 	chess && npx nodemon -d 1 -w ./client -e js,ts,vue --exec "reset && ${command}"
-}
-
-function note() {
-	daystamp=$(date +%m%d)
-	directory=~/notes/${daystamp}
-
-	mkdir -p ${directory}
-
-	cd ${directory}
-
-	vi $1
-
-	cd -
 }
 
 PROMPT_COMMAND=set_bash_prompt
