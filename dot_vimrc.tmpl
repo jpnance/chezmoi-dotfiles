@@ -316,6 +316,9 @@ function! UsefulMappings()
 
   let g:mapleader="\<Space>"
 
+  nnoremap n nzz
+  nnoremap N Nzz
+
   noremap <silent> <C-w>x :%!xxd<CR>
   noremap <silent> <C-w>X :%!xxd -r<CR>
   noremap <silent> <C-w>m :!man ./%<CR>
