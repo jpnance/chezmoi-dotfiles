@@ -344,11 +344,11 @@ function! UsefulMappings()
 
   " can i get what i want here by just doing :set clipboard=unnamedplus,unnamed?
   " see https://wiki.archlinux.org/title/Vim#Clipboard for more details
-  nnoremap <Leader>y "*y
-  vnoremap <Leader>y "*y
+  nnoremap <Leader>y "+y
+  vnoremap <Leader>y "+y
 
   {{- if eq .machine "countercheck" }}
-  nnoremap <silent> <Leader>y% :let @*="https://github.com/ChessCom/chess/tree/develop/" . expand('%') . "#L" . line(".")<CR>
+  nnoremap <silent> <Leader>y% :let @+="https://github.com/ChessCom/chess/tree/develop/" . expand('%') . "#L" . line(".")<CR>
   {{- else }}
   nnoremap <Leader>y% :echo "Quick GitHub linking is only implemented on countercheck for now"<CR>
   {{- end }}
