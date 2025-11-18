@@ -22,6 +22,10 @@ PROMPT_COMMAND=set_bash_prompt
 
 export PATH=$HOME/bin:$PATH
 
+{{- if eq .machine "lifeform" }}
+source /usr/share/nvm/init-nvm.sh
+{{- end }}
+
 {{- if eq .machine "countercheck" }}
 # this is really mac-specific stuff but we'll just leave it in the work bucket for now
 export CLICOLOR=1
