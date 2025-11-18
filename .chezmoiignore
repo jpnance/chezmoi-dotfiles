@@ -13,3 +13,13 @@
 .irssi/
 .vim/colors/quiet.vim
 {{- end }}
+
+{{- if eq .machine "countercheck" }}
+{{- end }}
+
+{{- if eq .machine "lifeform" }}
+{{- end }}
+
+{{- if eq .machine "sherpa" }}
+.config/kitty/
+{{- end }}
