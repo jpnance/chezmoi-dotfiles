@@ -1,3 +1,6 @@
+# negative ignores
+# ignore these files *except* on these machines
+
 {{- if ne .machine "countercheck" }}
 .aerospace.toml
 {{- end }}
@@ -14,6 +17,12 @@
 .vim/colors/quiet.vim
 {{- end }}
 
+{{- if ne .machine "cloudbreak" }}
+{{- end }}
+
+# positive ignores
+# ignore these files *on* these machines
+
 {{- if eq .machine "countercheck" }}
 {{- end }}
 
@@ -21,5 +30,9 @@
 {{- end }}
 
 {{- if eq .machine "sherpa" }}
+.config/kitty/
+{{- end }}
+
+{{- if eq .machine "cloudbreak" }}
 .config/kitty/
 {{- end }}
