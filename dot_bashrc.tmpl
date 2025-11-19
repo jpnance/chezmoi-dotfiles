@@ -20,8 +20,6 @@ alias lint-styles="~/Workspace/chess/client/build/bin/build run ci:lint-styles"
 HISTCONTROL=ignoredups
 PROMPT_COMMAND=set_bash_prompt
 
-export PATH=$HOME/bin:$PATH
-
 {{- if eq .machine "lifeform" }}
 source /usr/share/nvm/init-nvm.sh
 {{- end }}
