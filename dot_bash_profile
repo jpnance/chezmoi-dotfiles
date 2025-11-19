@@ -6,4 +6,10 @@ if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then
 	export PATH=$HOME/bin:$PATH
 fi
 
+{{- if eq .machine "countercheck" }}
+if [[ ":$PATH:" != *":/opt/homebrew/bin:"* ]]; then
+	export PATH=/opt/homebrew/bin:$PATH
+fi
+{{- end }}
+
 [[ -f ~/.bashrc ]] && . ~/.bashrc
