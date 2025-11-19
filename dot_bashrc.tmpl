@@ -191,8 +191,9 @@ function um() {
 }
 
 function note() {
+	yearstamp=$(date +%Y)
 	daystamp=$(date +%m%d)
-	directory=~/notes/${daystamp}
+	directory=~/notes/${yearstamp}/${daystamp}
 
 	mkdir -p ${directory}
 
