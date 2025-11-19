@@ -17,7 +17,7 @@ augroup END
 function! AutoReader()
   augroup autoReader
     autocmd!
-    autocmd CursorHold,InsertEnter *.vue,*.ts,*.js :checktime
+    autocmd CursorHold,InsertEnter * :checktime
   augroup END
 
   set autoread
