@@ -19,6 +19,9 @@ bin/wallsaver
 .vim/colors/quiet.vim
 {{- end }}
 
+{{- if ne .machine "salvage" }}
+{{- end }}
+
 {{- if ne .machine "cloudbreak" }}
 {{- end }}
 
@@ -30,6 +33,10 @@ bin/wallsaver
 
 {{- if eq .machine "lifeform" }}
 {{- end }}
+
+{{- if eq .machine "salvage" }}
+.config/kitty/
+{{- end}}
 
 {{- if eq .machine "sherpa" }}
 .config/kitty/
