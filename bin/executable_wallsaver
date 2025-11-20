@@ -1,0 +1,18 @@
+#!/bin/sh
+
+sleep_pid=""
+
+trap 'kill $(jobs -pr)' EXIT
+trap 'kill ${sleep_pid}' SIGUSR1
+
+while :
+do
+	PATH=/usr/lib/xscreensaver:$PATH $(cat ~/.wallsavers | sed '/^#/d' | shuf -n 1) -root &
+	process_pid=$!
+
+	sleep 300 &
+	sleep_pid=$!
+	wait ${sleep_pid}
+
+	kill ${process_pid}
+done

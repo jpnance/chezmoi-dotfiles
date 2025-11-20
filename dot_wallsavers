@@ -1,0 +1,31 @@
+blocktube
+# boxfit
+cityflow --count 500 --wave-speed 5
+#cityflow --count 500 --wave-speed 5 --wireframe # i wish this rendered with color
+# cloudlife # play with params a bit
+# coral
+# cubicgrid # but play around with stuff; --mono is actually pretty neat
+cwaves
+# cynosure
+# deco
+demon
+# discoball
+# drift --grow # this is a nice saver, just not great for this particular application
+# energystream --speed 0.5 # this is just a little too much, i think
+# gibson # with speed slowed down
+# halftone # with maxspeed 0.001 or so
+hexadrop
+hexstrut --thickness 0.50
+# hexstrut --thickness 0.10 --wireframe # this looks good, it just doesn't look great!
+hypnowheel --speed 0.25
+# hypnowheel --speed 0.25 --twistiness 1.0 --count 8 --layers 6 # i like this more if i'm watching but i think more stuff going on is better for a live wallpaper
+# interference --hue 240 --speed 2 --color-shift 30
+# klein # huge manpage, though
+# marbling # looks great but taxes the CPU
+noof
+petri
+# projectiveplane # huge manpage, though
+# quasicrystal # doesn't perform great, though not because it taxes the CPU
+razzledazzle --mode flat --speed 0.2
+# rdbomb
+voronoi --point-size 0

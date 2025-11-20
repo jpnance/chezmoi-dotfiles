@@ -6,8 +6,10 @@
 {{- end }}
 
 {{- if ne .machine "lifeform" }}
+bin/wallsaver
 .spectrwm/
 .spectrwm.conf
+.wallsavers
 .xinitrc
 .Xresources
 {{- end }}
