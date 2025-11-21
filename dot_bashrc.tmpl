@@ -187,35 +187,6 @@ function um() {
 	cat ~/um/*$1*
 }
 
-function note() {
-	if [[ -z $1 ]]; then
-		echo "usage: note <filename>"
-		return 1
-	fi
-
-	initial_pwd=${PWD}
-
-	yearstamp=$(date +%Y)
-	daystamp=$(date +%m%d)
-	directory=~/notes/${yearstamp}/${daystamp}
-
-	mkdir -p ${directory}
-
-	cd ${directory}
-
-	vim -c "e ${directory}/$1" -c "cd ../.."
-
-	cd ~/notes
-
-	find . -type d | xargs rmdir 2> /dev/null
-
-	git add .
-	git commit -m "$(git status -s)"
-	git push
-
-	cd ${initial_pwd}
-}
-
 {{- if eq .machine "countercheck" }}
 function trans() {
 	grep $* ~/Workspace/chess/app/Resources/assets/js/translations/messages.en_US.json

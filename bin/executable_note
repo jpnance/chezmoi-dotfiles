@@ -1,0 +1,34 @@
+#!/bin/bash
+set -euo pipefail
+
+if [[ $# -eq 0 ]]; then
+	echo "usage: note <filename>"
+	exit 1
+fi
+
+filename="$1"
+initial_pwd=${PWD}
+
+yearstamp=$(date +%Y)
+daystamp=$(date +%m%d)
+directory=${HOME}/notes/${yearstamp}/${daystamp}
+
+mkdir -p ${directory}
+
+cd ${directory}
+
+vim -c "e ${directory}/${filename}" -c "cd ../.."
+
+cd ${HOME}/notes
+
+find . -type d -empty -delete
+
+if [[ -n "$(git status --porcelain)" ]]; then
+	git add .
+	git commit -m "$(git status -s)"
+	git push
+else
+	echo "No changes to commit."
+fi
+
+cd ${initial_pwd}
