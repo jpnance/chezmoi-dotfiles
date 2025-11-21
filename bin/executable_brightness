@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# As written here, this script depends on us having write access to
+# /sys/class/backlight/intel_backlight/brightness. One reasonable way to do
+# this is to:
+#
+# 1. Add ourselves to the "video" group ("wheel" might also be reasonable)
+# 2. Create a udev rule that changes the group ownership of the backlight
+#    device to "wheel"
+# 3. Create a udev rule that changes the backlight device to be group-writable
+# 4. Restart the computer
+#
+# The udev rule that I've most recently used looks like this:
+#
+# $ cat /etc/udev/rules.d/backlight.rules
+# ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="intel_backlight", \
+#   RUN+="/bin/chgrp video /sys/class/backlight/%k/brightness", \
+#   RUN+="/bin/chmod g+w /sys/class/backlight/%k/brightness"
+#
+# If we don't want to do any of that, then we'll need to change the "tee"
+# command below to "sudo tee" (and, of course, ensure that we're allowed to use
+# `sudo`. Naturally, we'll have to type a password whenever we run this script.
+
+if [ -z "$1" ]; then
+	echo "Usage: brightness PERCENTAGE"
+	exit
+fi
+
+max_brightness=$(cat /sys/class/backlight/intel_backlight/max_brightness)
+
+echo $((${max_brightness} * $1 / 100)) | tee /sys/class/backlight/intel_backlight/brightness > /dev/null

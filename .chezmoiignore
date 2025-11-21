@@ -6,6 +6,7 @@
 {{- end }}
 
 {{- if ne .machine "lifeform" }}
+bin/brightness
 bin/wallsaver
 .spectrwm/
 .spectrwm.conf
