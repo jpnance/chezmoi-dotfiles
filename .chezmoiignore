@@ -1,6 +1,9 @@
 # negative ignores
 # ignore these files *except* on these machines
 
+{{- if ne .machine "cloudbreak" }}
+{{- end }}
+
 {{- if ne .machine "countercheck" }}
 .aerospace.toml
 {{- end }}
@@ -15,19 +18,20 @@ bin/wallsaver
 .Xresources
 {{- end }}
 
+{{- if ne .machine "salvage" }}
+{{- end }}
+
 {{- if ne .machine "sherpa" }}
 .irssi/
 .vim/colors/quiet.vim
 {{- end }}
 
-{{- if ne .machine "salvage" }}
-{{- end }}
-
-{{- if ne .machine "cloudbreak" }}
-{{- end }}
-
 # positive ignores
 # ignore these files *on* these machines
+
+{{- if eq .machine "cloudbreak" }}
+.config/kitty/
+{{- end }}
 
 {{- if eq .machine "countercheck" }}
 {{- end }}
@@ -40,9 +44,5 @@ bin/wallsaver
 {{- end}}
 
 {{- if eq .machine "sherpa" }}
-.config/kitty/
-{{- end }}
-
-{{- if eq .machine "cloudbreak" }}
 .config/kitty/
 {{- end }}
