@@ -8,7 +8,7 @@ cityflow --count 500 --wave-speed 5
 cwaves
 # cynosure
 # deco
-demon
+# demon # i dunno, i just don't think it works that great
 # discoball
 # drift --grow # this is a nice saver, just not great for this particular application
 # energystream --speed 0.5 # this is just a little too much, i think
