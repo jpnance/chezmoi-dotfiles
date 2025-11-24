@@ -10,7 +10,7 @@ do
 	PATH=/usr/lib/xscreensaver:$PATH $(cat ~/.wallsavers | sed '/^#/d' | shuf -n 1) -root &
 	process_pid=$!
 
-	sleep 300 &
+	sleep 900 &
 	sleep_pid=$!
 	wait ${sleep_pid}
 
