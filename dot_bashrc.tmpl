@@ -197,28 +197,35 @@ function route() {
 }
 
 function branch() {
-	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+  if [[ $# -eq 0 ]]; then
+    select branch in $(git branch | sed -e 's/[* ]//g'); do
+      git checkout $branch
+      break
+    done
+  else
+    BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
 
-	new_branch_name=$(echo $* | sed -e "s/ /-/g")
+    new_branch_name=$(echo $* | sed -e "s/ /-/g")
 
-	if [ "${TICKET}" == "" ]; then
-		read -p "\$TICKET is blank. Create new branch anyway? [y/N]" -n 1 -r -s CHOICE
-		echo
-		echo
+    if [ "${TICKET}" == "" ]; then
+      read -p "\$TICKET is blank. Create new branch anyway? [y/N]" -n 1 -r -s CHOICE
+      echo
+      echo
 
-		case "${CHOICE}" in
-			y|Y)
-				;;
+      case "${CHOICE}" in
+        y|Y)
+          ;;
 
-			n|N|*)
-				return
-				;;
-		esac
-	else
-		new_branch_name="${TICKET}-${new_branch_name}"
-	fi
+        n|N|*)
+          return
+          ;;
+      esac
+    else
+      new_branch_name="${TICKET}-${new_branch_name}"
+    fi
 
-	git checkout -b PN/${new_branch_name}
+    git checkout -b PN/${new_branch_name}
+  fi
 }
 
 function commit() {
