@@ -1,25 +1,27 @@
 #!/bin/bash
 set -euo pipefail
 
-if [[ $# -eq 0 ]]; then
-	echo "usage: note <filename>"
-	exit 1
-fi
-
-filename="$1"
 initial_pwd=${PWD}
 
-yearstamp=$(date +%Y)
-daystamp=$(date +%m%d)
-directory=${HOME}/notes/${yearstamp}/${daystamp}
+if [[ $# -eq 0 ]]; then
+	cd ${HOME}/notes
 
-mkdir -p ${directory}
+	vim .
+else
+	filename="$1"
 
-cd ${directory}
+	yearstamp=$(date +%Y)
+	daystamp=$(date +%m%d)
+	directory=${HOME}/notes/${yearstamp}/${daystamp}
 
-vim -c "e ${directory}/${filename}" -c "cd ../.."
+	mkdir -p ${directory}
 
-cd ${HOME}/notes
+	cd ${directory}
+
+	vim -c "e ${directory}/${filename}" -c "cd ../.."
+
+	cd ${HOME}/notes
+fi
 
 find . -type d -empty -delete
 
