@@ -299,7 +299,7 @@ function! UsefulMappings()
     endif
   endfunction
 
-  {{- if eq .machine "countercheck" }}
+  {{ if eq .machine "countercheck" -}}
   function! SearchForImports()
     let l:filename = fnamemodify(expand('%'), ':t:r')
 
