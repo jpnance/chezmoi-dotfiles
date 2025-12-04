@@ -39,9 +39,6 @@ bin/note
 
 {{ if not (has "vim" .tags) }}
 .vim
-{{ if has "oldvim" .tags }}
-!.vim/colors/quiet.vim
-{{ end }}
 .vimrc
 {{ end }}
 

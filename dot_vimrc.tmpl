@@ -41,6 +41,8 @@ function! ColorScheme()
   set background=dark
   {{- if eq .machine "cloudbreak" }}
   colorscheme blade_runner
+  {{- else if has "vim-old" .tags }}
+  colorscheme quiet_legacy
   {{- else }}
   colorscheme quiet
   {{- end }}
