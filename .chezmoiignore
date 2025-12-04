@@ -1,48 +1,56 @@
-# negative ignores
-# ignore these files *except* on these machines
-
-{{- if ne .machine "cloudbreak" }}
-{{- end }}
-
-{{- if ne .machine "countercheck" }}
+{{ if not (has "aerospace" .tags) }}
 .aerospace.toml
-{{- end }}
+{{ end }}
 
-{{- if ne .machine "lifeform" }}
+{{ if not (has "bash" .tags) }}
+.bash_profile
+.bashrc
+{{ end }}
+
+{{ if not (has "brightness" .tags) }}
 bin/brightness
-bin/wallsaver
-.spectrwm/
+{{ end }}
+
+{{ if not (has "git" .tags) }}
+.gitconfig
+{{ end }}
+
+{{ if not (has "irssi" .tags) }}
+.irssi
+{{ end }}
+
+{{ if not (has "kitty" .tags) }}
+.config
+.config/kitty/**
+{{ end }}
+
+{{ if not (has "note" .tags) }}
+bin/note
+{{ end }}
+
+{{ if not (has "spectrwm" .tags) }}
+.spectrwm
 .spectrwm.conf
+{{ end }}
+
+{{ if not (has "tmux" .tags) }}
+.tmux.conf
+{{ end }}
+
+{{ if not (has "vim" .tags) }}
+.vim
+{{ if has "oldvim" .tags }}
+!.vim/colors/quiet.vim
+{{ end }}
+.vimrc
+{{ end }}
+
+{{ if not (has "wallsaver" .tags) }}
 .wallsavers
-.xinitrc
+bin/wallsaver
+{{ end }}
+
+{{ if not (has "xorg" .tags) }}
 .Xresources
-{{- end }}
-
-{{- if ne .machine "salvage" }}
-{{- end }}
-
-{{- if ne .machine "sherpa" }}
-.irssi/
-.vim/colors/quiet.vim
-{{- end }}
-
-# positive ignores
-# ignore these files *on* these machines
-
-{{- if eq .machine "cloudbreak" }}
-.config/kitty/
-{{- end }}
-
-{{- if eq .machine "countercheck" }}
-{{- end }}
-
-{{- if eq .machine "lifeform" }}
-{{- end }}
-
-{{- if eq .machine "salvage" }}
-.config/kitty/
-{{- end}}
-
-{{- if eq .machine "sherpa" }}
-.config/kitty/
-{{- end }}
+.xinitrc
+{{ end }}
