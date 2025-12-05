@@ -348,16 +348,20 @@ function! UsefulMappings()
   nnoremap <Leader>gi :echo "SearchForImports() is only implemented on countercheck for now"<CR>
   {{- end }}
 
+  nnoremap <silent> <Leader>C :call term_start('bash -c "cd ~/Workspace/chess && ./client/build/bin/build compile ' . get(g:, 'entries') . '"', { 'term_name': 'compile', 'term_rows': 5, 'term_finish': 'close' })<CR><C-W>p
+
   " can i get what i want here by just doing :set clipboard=unnamedplus?
   " maybe these leader commands aren't really that useful?
   " see https://wiki.archlinux.org/title/Vim#Clipboard for more details
   nnoremap <Leader>y "+y
   vnoremap <Leader>y "+y
 
+  nnoremap <silent> <Leader>y% :let @+ = @%<CR>
+
   {{- if eq .machine "countercheck" }}
-  nnoremap <silent> <Leader>y% :let @+="https://github.com/ChessCom/chess/tree/develop/" . expand('%') . "#L" . line(".")<CR>
+  nnoremap <silent> <Leader>yg :let @+="https://github.com/ChessCom/chess/tree/develop/" . expand('%') . "#L" . line(".")<CR>
   {{- else }}
-  nnoremap <Leader>y% :echo "Quick GitHub linking is only implemented on countercheck for now"<CR>
+  nnoremap <Leader>yg :echo "Quick GitHub linking is only implemented on countercheck for now"<CR>
   {{- end }}
 
   nnoremap <Leader>dd 0D
