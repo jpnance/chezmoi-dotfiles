@@ -86,7 +86,9 @@ alt-shift-c = 'reload-config'
 #alt-down = 'workspace prev'
 #alt-up = 'workspace next'
 
-alt-m = 'focus-back-and-forth'
+# https://github.com/nikitabobko/AeroSpace/discussions/1790
+# 'list-focus-history-stack --windows --workspace focused --prev | focus --window-id -' might be a solution in the future
+# alt-m = 'focus-back-and-forth'
 
 alt-a = 'workspace-back-and-forth'
 
