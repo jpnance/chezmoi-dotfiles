@@ -192,15 +192,52 @@ function! Gui()
 endfunction
 
 function! Indentation()
-  {{- if eq .machine "countercheck" }}
-  set tabstop=2
-  set shiftwidth=2
-  set expandtab
-  {{- else }}
-  set tabstop=4
-  set shiftwidth=4
-  set noexpandtab
-  {{- end }}
+  augroup indentation
+    autocmd!
+    autocmd BufNewFile,BufRead * call ApplyIndentationAuto()
+  augroup END
+
+  function! ApplyIndentationAuto()
+    let l:detected = DetectIndentation()
+    call ApplyIndentationToBuffer(l:detected != '' ? l:detected : g:my.default_indentation)
+  endfunction
+
+  function! ApplyIndentationToBuffer(state)
+    if a:state == 'spaces-2'
+      setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+    elseif a:state == 'spaces-4'
+      setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+    elseif a:state == 'tabs-4'
+      setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=0
+    endif
+  endfunction
+
+  function! CycleIndentation()
+    let l:states = ['spaces-2', 'spaces-4', 'tabs-4']
+    let l:next_index = (index(l:states, g:my.default_indentation) + 1) % len(l:states)
+    let g:my.default_indentation = l:states[l:next_index]
+    call ApplyIndentationToBuffer(g:my.default_indentation)
+    echo 'Tab style: ' . g:my.default_indentation
+  endfunction
+
+  function! DetectIndentation()
+    if search('^\t', 'nw')
+      return 'tabs-4'
+    elseif search('^  \S', 'nw')
+      return 'spaces-2'
+    elseif search('^    \S', 'nw')
+      return 'spaces-4'
+    else
+      return ''
+    endif
+  endfunction
+
+  let g:my = get(g:, 'my', {})
+  let g:my.default_indentation = 'tabs-4'
+
+  nnoremap <Leader><Tab> :call CycleIndentation()<CR>
+
+  call ApplyIndentationToBuffer(g:my.default_indentation)
   set autoindent
   set smartindent
 endfunction
