@@ -181,7 +181,7 @@ function! Gui()
   set mouse=a
 
   set list
-  {{- if eq .machine "sherpa" }}
+  {{- if has "vim-old" .tags }}
   set listchars=tab:┊\ 
 
   set fillchars=vert:│,fold:-
