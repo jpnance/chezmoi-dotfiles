@@ -242,8 +242,10 @@ function! Indentation()
   nnoremap <Leader><Tab> :call CycleIndentation()<CR>
 
   call ApplyIndentationToBuffer(g:my.default_indentation)
+
   set autoindent
   set smartindent
+  set softtabstop=-1
 endfunction
 
 {{- if eq .machine "countercheck" }}
