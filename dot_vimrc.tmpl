@@ -74,7 +74,9 @@ function! Defaults()
   set hlsearch
   set incsearch
 
+  {{ if not (has "vim-old .tags) -}}
   set jumpoptions=stack
+  {{- end }}
 endfunction
 
 function! Git()
