@@ -20,7 +20,7 @@ augroup END
 function! AutoReader()
   augroup autoReader
     autocmd!
-    autocmd CursorHold,InsertEnter * :checktime
+    autocmd CursorHold,InsertEnter,WinEnter,WinLeave * :checktime
   augroup END
 
   set autoread
