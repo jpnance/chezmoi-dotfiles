@@ -208,11 +208,11 @@ function! Indentation()
 
   function! ApplyIndentationToBuffer(state)
     if a:state == 'spaces-2'
-      setlocal expandtab tabstop=2 shiftwidth=2
+      setlocal expandtab tabstop=2
     elseif a:state == 'spaces-4'
-      setlocal expandtab tabstop=4 shiftwidth=4
+      setlocal expandtab tabstop=4
     elseif a:state == 'tabs-4'
-      setlocal noexpandtab tabstop=4 shiftwidth=4
+      setlocal noexpandtab tabstop=4
     endif
   endfunction
 
@@ -248,6 +248,7 @@ function! Indentation()
 
   set autoindent
   set smartindent
+  set shiftwidth=0
   set softtabstop=-1
 endfunction
 
