@@ -391,53 +391,12 @@ set wildignore+=**/node_modules/**,**/dist/**
 
 nnoremap <Leader>gf :e client/<cfile>
 
-{{ if eq .machine "countercheck" -}}
-function! SearchForImports()
-  let l:filename = fnamemodify(expand('%'), ':t:r')
-
-  execute 'silent! grep! import.*' . l:filename
-  redraw!
-
-  if len(getqflist()) > 0
-    copen
-  else
-    echo "No results found."
-  endif
-endfunction
-
-nnoremap <silent> <Leader>gi :call SearchForImports()<CR>
-{{- else }}
-nnoremap <Leader>gi :echo "SearchForImports() is only implemented on countercheck for now"<CR>
-{{- end }}
-
 nnoremap <Leader>b :b 
 nnoremap <Leader>f :find 
 
-{{- if eq .machine "countercheck" }}
-
-" ============================================================
-" PROJECT PATH
-" ============================================================
-
-function! IgnoreFirstDirectory(fname)
-  return join(split(a:fname, '/')[1:], '/')
-endfunction
-
-let s:pwd = getcwd()
-
-if s:pwd =~ "Workspace/chess"
-  let pathsWeCareAbout = ["/client/web/**", "/client/shared/**", "/client/tests/**", "/client/types/**", "/src/Chess/WebBundle/**", "/src/Chess/CoreBundle/**"]
-  let &path = join(map(pathsWeCareAbout, { i, path -> s:pwd .. path}), ',')
-
-  set includeexpr=IgnoreFirstDirectory(v:fname)
-  set grepprg=git\ grep\ -n\ $*\ --\ ':!*translations*'\ ':!*js_routes*'\ ':!*release-history.md*'
-endif
-
-" ============================================================
-" BUILD
-" ============================================================
-
-nnoremap <silent> <Leader>C :botright call term_start('bash -c "cd ~/Workspace/chess && ./client/build/bin/build compile ' . get(g:, 'my').entries . '"', { 'term_name': 'compile', 'term_rows': 5, 'term_finish': 'close' })<CR><C-W>p
+{{- if not (eq .machine "countercheck") }}
+nnoremap <Leader>gi :echo "SearchForImports() is only implemented on countercheck for now"<CR>
+nnoremap <Leader>yg :echo "Quick GitHub linking is only implemented on countercheck for now"<CR>
 {{- end }}
 
 " ============================================================
@@ -451,12 +410,6 @@ nnoremap <Leader>y "+y
 vnoremap <Leader>y "+y
 
 nnoremap <silent> <Leader>y% :let @+ = @%<CR>
-
-{{- if eq .machine "countercheck" }}
-nnoremap <silent> <Leader>yg :let @+="https://github.com/ChessCom/chess/tree/develop/" . expand('%') . "#L" . line(".")<CR>
-{{- else }}
-nnoremap <Leader>yg :echo "Quick GitHub linking is only implemented on countercheck for now"<CR>
-{{- end }}
 
 " ============================================================
 " VIMRC EDITING
@@ -476,3 +429,43 @@ inoremap <C-C> <Esc>
 nnoremap <Leader>: :%s/<C-R><C-W>//g<Left><Left>
 
 nnoremap <Leader>b/ ?function<CR>V/{<CR>%<ESC>/\%V
+
+{{- if eq .machine "countercheck" }}
+
+" ============================================================
+" CHESS PROJECT
+" ============================================================
+
+function! IgnoreFirstDirectory(fname)
+  return join(split(a:fname, '/')[1:], '/')
+endfunction
+
+function! SearchForImports()
+  let l:filename = fnamemodify(expand('%'), ':t:r')
+
+  execute 'silent! grep! import.*' . l:filename
+  redraw!
+
+  if len(getqflist()) > 0
+    copen
+  else
+    echo "No results found."
+  endif
+endfunction
+
+let s:pwd = getcwd()
+
+if s:pwd =~ "Workspace/chess"
+  let pathsWeCareAbout = ["/client/web/**", "/client/shared/**", "/client/tests/**", "/client/types/**", "/src/Chess/WebBundle/**", "/src/Chess/CoreBundle/**"]
+  let &path = join(map(pathsWeCareAbout, { i, path -> s:pwd .. path}), ',')
+
+  set includeexpr=IgnoreFirstDirectory(v:fname)
+  set grepprg=git\ grep\ -n\ $*\ --\ ':!*translations*'\ ':!*js_routes*'\ ':!*release-history.md*'
+endif
+
+nnoremap gd "zyiw/import.*<C-R>z<CR>:nohlsearch<CR>f'gf/<C-R>z<CR>
+
+nnoremap <silent> <Leader>gi :call SearchForImports()<CR>
+nnoremap <silent> <Leader>yg :let @+="https://github.com/ChessCom/chess/tree/develop/" . expand('%') . "#L" . line(".")<CR>
+nnoremap <silent> <Leader>C :botright call term_start('bash -c "cd ~/Workspace/chess && ./client/build/bin/build compile ' . get(g:, 'my').entries . '"', { 'term_name': 'compile', 'term_rows': 5, 'term_finish': 'close' })<CR><C-W>p
+{{- end }}
