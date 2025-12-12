@@ -175,7 +175,10 @@ function! Gui()
   set splitright
 
   set wildmenu
-  set wildmode=list:longest,full
+  set wildmode=longest:full,full
+  {{- if not (has "vim-old" .tags) }}
+  set wildoptions=pum
+  {{- end }}
   set wildignore+=**/node_modules/**,**/dist/**
 
   set mouse=a
