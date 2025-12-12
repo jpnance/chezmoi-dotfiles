@@ -1,6 +1,129 @@
 let g:mapleader="\<Space>"
 let g:my = {}
 
+" ============================================================
+" CORE SETTINGS
+" ============================================================
+
+set nocompatible
+
+set nomodeline
+set modelines=0
+
+filetype plugin on
+
+set noswapfile
+
+delmarks!
+delmarks A-Z0-9
+
+set path+=**
+
+syntax on
+set regexpengine=0
+
+{{ if not (has "vim-old" .tags) -}}
+set jumpoptions=stack
+{{- end }}
+
+" ============================================================
+" COLORSCHEME
+" ============================================================
+
+let g:jellybeans_overrides = {
+\ 'background': { 'ctermbg': 'none', '256ctermbg': 'none' },
+\ 'VertSplit': { 'guifg': '333333' },
+\ 'StatusLineNC': { 'guibg': '333333', 'guifg': '999999' },
+\ 'StatusLine': { 'guibg': '555555', 'guifg': 'ffffff' },
+\}
+
+if has('termguicolors') && &termguicolors
+  let g:jellybeans_overrides['background']['guibg'] = 'none'
+endif
+
+set t_Co=256
+
+set background=dark
+{{- if eq .machine "cloudbreak" }}
+colorscheme blade_runner
+{{- else if has "vim-old" .tags }}
+colorscheme quiet_legacy
+{{- else }}
+colorscheme quiet
+{{- end }}
+
+" ============================================================
+" DISPLAY
+" ============================================================
+
+set number
+set relativenumber
+set cursorline
+
+set list
+{{- if has "vim-old" .tags }}
+set listchars=tab:┊\ 
+set fillchars=vert:│,fold:-
+{{- else }}
+set listchars=leadmultispace:·\ ,tab:┊\ 
+set fillchars=vert:│,fold:-,eob:~,lastline:@
+{{- end }}
+
+augroup cursorLineFocus
+  autocmd!
+  autocmd WinEnter * :set cursorline
+  autocmd WinLeave * :set nocursorline
+augroup END
+
+" ============================================================
+" WINDOWS & SPLITS
+" ============================================================
+
+set splitbelow
+set splitright
+
+set mouse=a
+
+augroup autoResizer
+  autocmd!
+  autocmd VimResized * exe "normal \<c-w>="
+augroup END
+
+noremap <silent> <C-w>x :%!xxd<CR>
+noremap <silent> <C-w>X :%!xxd -r<CR>
+noremap <silent> <C-w>m :!man ./%<CR>
+noremap <silent> <C-w>z :tabnew %<CR>
+
+" ============================================================
+" STATUS LINE
+" ============================================================
+
+set laststatus=2
+set statusline=
+set statusline+=\ 
+set statusline+=%f\ 
+set statusline+=%m
+set statusline+=%h
+set statusline+=%r
+set statusline+=%=
+set statusline+=%l:%c\ 
+
+" ============================================================
+" AUTO-READ
+" ============================================================
+
+augroup autoReader
+  autocmd!
+  autocmd CursorHold,InsertEnter,WinEnter,WinLeave * :checktime
+augroup END
+
+set autoread
+set updatetime=1000
+
+" ============================================================
+" FILETYPE-SPECIFIC
+" ============================================================
+
 augroup filetypePhp
   autocmd!
   autocmd FileType php :setlocal suffixesadd=.php
@@ -17,433 +140,339 @@ augroup filetypeSh
   autocmd FileType sh :setlocal noexpandtab tabstop=4 shiftwidth=4
 augroup END
 
-function! AutoReader()
-  augroup autoReader
-    autocmd!
-    autocmd CursorHold,InsertEnter,WinEnter,WinLeave * :checktime
-  augroup END
+" ============================================================
+" INDENTATION
+" ============================================================
 
-  set autoread
-  set updatetime=1000
-endfunction
-
-function! ColorScheme()
-  let g:jellybeans_overrides = {
-  \ 'background': { 'ctermbg': 'none', '256ctermbg': 'none' },
-  \ 'VertSplit': { 'guifg': '333333' },
-  \ 'StatusLineNC': { 'guibg': '333333', 'guifg': '999999' },
-  \ 'StatusLine': { 'guibg': '555555', 'guifg': 'ffffff' },
-  \}
-
-  if has('termguicolors') && &termguicolors
-    let g:jellybeans_overrides['background']['guibg'] = 'none'
+function! ApplyIndentationToBuffer(state)
+  if a:state == 'spaces-2'
+    setlocal expandtab tabstop=2
+  elseif a:state == 'spaces-4'
+    setlocal expandtab tabstop=4
+  elseif a:state == 'tabs-4'
+    setlocal noexpandtab tabstop=4
   endif
-
-  set t_Co=256
-
-  set background=dark
-  {{- if eq .machine "cloudbreak" }}
-  colorscheme blade_runner
-  {{- else if has "vim-old" .tags }}
-  colorscheme quiet_legacy
-  {{- else }}
-  colorscheme quiet
-  {{- end }}
 endfunction
 
-function! Defaults()
-  set nocompatible
-
-  set nomodeline
-  set modelines=0
-
-  filetype plugin on
-
-  set noswapfile
-
-  delmarks!
-  delmarks A-Z0-9
-
-  set path+=**
-
-  set grepprg=git\ grep\ -n\ $*
-
-  syntax on
-  set regexpengine=0
-
-  set hlsearch
-  set incsearch
-
-  {{ if not (has "vim-old" .tags) -}}
-  set jumpoptions=stack
-  {{- end }}
+function! ApplyIndentationAuto()
+  let l:detected = DetectIndentation()
+  call ApplyIndentationToBuffer(l:detected != '' ? l:detected : g:my.default_indentation)
 endfunction
 
-function! Git()
-  " I might not need this on non-work machines
-  " command! GitDiffDevelopArgs execute 'args ' . join(filter(split(system('git diff --name-only origin/develop...'), "\n"), 'filereadable(v:val)'), " ") | ls
-  command! GitDiffDevelopArgs call setqflist(map(systemlist('git diff --name-only origin/develop...'), '{ "filename": v:val, "lnum": 1, "col": 1, "text": "" }')) | copen
-
-  " DiffHere: left = <base_ref> blob (scratch), right = local file (focused).
-  function! DiffHere(...) abort
-    " safe optional arg: first arg or default
-    let l:base_ref = get(a:000, 0, 'origin/develop')
-
-    " 1) Current buffer path
-    let l:cur = expand('%:p')
-    if empty(l:cur)
-      echoerr "DiffHere: current buffer has no filename"
-      return
-    endif
-
-    " 2) Directory to run git in (use file dir or cwd)
-    let l:dir = fnamemodify(l:cur, ':h')
-    if l:dir ==# '' | let l:dir = getcwd() | endif
-
-    " 3) Get repo root (capture stderr)
-    let l:cmd = 'git -C ' . fnameescape(l:dir) . ' rev-parse --show-toplevel 2>&1'
-    let l:root_out = systemlist(l:cmd)
-    if v:shell_error || empty(l:root_out)
-      let l:msg = empty(l:root_out) ? 'git failed with no output' : join(l:root_out, "\n")
-      echohl ErrorMsg
-      echom 'DiffHere: unable to determine git repo root for ' . l:dir . ' -- ' . l:msg
-      echohl None
-      return
-    endif
-    let l:root = fnamemodify(l:root_out[0], ':p')
-
-    " 4) Repo-relative path for git show
-    let l:rel = substitute(l:cur, '^' . escape(l:root, '\') , '', '')
-
-    " 5) Fetch blob from base_ref (capture stderr)
-    let l:showcmd = 'git --no-pager -C ' . fnameescape(l:root) . ' show ' . shellescape(l:base_ref . ':' . l:rel) . ' 2>&1'
-    let l:blob = systemlist(l:showcmd)
-    if v:shell_error
-      let l:errtext = join(l:blob, "\n")
-      echohl WarningMsg
-      echom 'DiffHere: git show failed: ' . l:errtext
-      echohl None
-      let l:blob = [''] " ensure we still create an empty buffer for diff
-    endif
-
-    execute 'tabnew'
-
-    " 6) Ensure we start by populating the left window with the base blob.
-    " Use enew to get a fresh buffer then set it to be scratch and populate it.
-    " (We avoid using vsplit first to keep deterministic left/right.)
-    execute 'enew'
-    setlocal buftype=nowrite bufhidden=wipe noswapfile nobuflisted
-    call setline(1, l:blob)
-    execute 'file ' . fnameescape('[' . l:base_ref . '] ' . l:rel)
-
-    " 7) Open the local file to the right explicitly (regardless of 'splitright')
-    " 'rightbelow vsplit' ensures the new window appears to the right of the current window.
-    execute 'rightbelow vsplit'
-    execute 'edit ' . fnameescape(l:cur)
-
-    " 8) Move focus to the right window (local file)
-    wincmd l
-
-    " 9) Enable diff mode if not already on
-    if &diff == 0
-      windo diffthis
-    endif
-
-    " 10) Jump to first diff hunk (in the right window)
-    silent! normal! ]c
-  endfunction
-
-  command! -nargs=? DiffHere call DiffHere(<f-args>)
-endfunction
-
-function! Gui()
-  augroup cursorLineFocus
-    autocmd!
-    autocmd WinEnter * :set cursorline
-    autocmd WinLeave * :set nocursorline
-  augroup END
-
-  augroup autoResizer
-    autocmd!
-    autocmd VimResized * exe "normal \<c-w>="
-  augroup END
-
-  set number
-  set relativenumber
-
-  set splitbelow
-  set splitright
-
-  set wildmenu
-  set wildmode=longest:full,full
-  {{- if not (has "vim-old" .tags) }}
-  set wildoptions=pum
-  {{- end }}
-  set wildignore+=**/node_modules/**,**/dist/**
-
-  set mouse=a
-
-  set list
-  {{- if has "vim-old" .tags }}
-  set listchars=tab:┊\ 
-
-  set fillchars=vert:│,fold:-
-  {{- else }}
-  set listchars=leadmultispace:·\ ,tab:┊\ 
-
-  set fillchars=vert:│,fold:-,eob:~,lastline:@
-  {{- end }}
-
-  set cursorline
-endfunction
-
-function! Indentation()
-  augroup indentation
-    autocmd!
-    autocmd BufNewFile * call ApplyIndentationToBuffer(g:my.default_indentation)
-    autocmd FileType * call ApplyIndentationAuto()
-  augroup END
-
-  function! ApplyIndentationAuto()
-    let l:detected = DetectIndentation()
-    call ApplyIndentationToBuffer(l:detected != '' ? l:detected : g:my.default_indentation)
-  endfunction
-
-  function! ApplyIndentationToBuffer(state)
-    if a:state == 'spaces-2'
-      setlocal expandtab tabstop=2
-    elseif a:state == 'spaces-4'
-      setlocal expandtab tabstop=4
-    elseif a:state == 'tabs-4'
-      setlocal noexpandtab tabstop=4
-    endif
-  endfunction
-
-  function! CycleIndentation()
-    let l:states = ['spaces-2', 'spaces-4', 'tabs-4']
-    let l:next_index = (index(l:states, g:my.default_indentation) + 1) % len(l:states)
-    let g:my.default_indentation = l:states[l:next_index]
-    call ApplyIndentationToBuffer(g:my.default_indentation)
-    echo 'Tab style: ' . g:my.default_indentation
-  endfunction
-
-  function! DetectIndentation()
-    if search('^\t', 'nw')
-      return 'tabs-4'
-    elseif search('^  \S', 'nw')
-      return 'spaces-2'
-    elseif search('^    \S', 'nw')
-      return 'spaces-4'
-    else
-      return ''
-    endif
-  endfunction
-
-  {{ if eq .machine "countercheck" -}}
-  let g:my.default_indentation = 'spaces-2'
-  {{- else }}
-  let g:my.default_indentation = 'tabs-4'
-  {{- end }}
-
-  nnoremap <Leader><Tab> :call CycleIndentation()<CR>
-
+function! CycleIndentation()
+  let l:states = ['spaces-2', 'spaces-4', 'tabs-4']
+  let l:next_index = (index(l:states, g:my.default_indentation) + 1) % len(l:states)
+  let g:my.default_indentation = l:states[l:next_index]
   call ApplyIndentationToBuffer(g:my.default_indentation)
-
-  set autoindent
-  set smartindent
-  set shiftwidth=0
-  set softtabstop=-1
+  echo 'Tab style: ' . g:my.default_indentation
 endfunction
 
-{{- if eq .machine "countercheck" }}
-function! Path()
-  function! IgnoreFirstDirectory(fname)
-    return join(split(a:fname, '/')[1:], '/')
-  endfunction
-
-  let pwd = getcwd()
-
-  if pwd =~ "Workspace/chess"
-    let pathsWeCareAbout = ["/client/web/**", "/client/shared/**", "/client/tests/**", "/client/types/**", "/src/Chess/WebBundle/**", "/src/Chess/CoreBundle/**"]
-    let &path = join(map(pathsWeCareAbout, { i, path -> pwd .. path}), ',')
-
-    set includeexpr=IgnoreFirstDirectory(v:fname)
-    set grepprg=git\ grep\ -n\ $*\ --\ ':!*translations*'\ ':!*js_routes*'\ ':!*release-history.md*'
+function! DetectIndentation()
+  if search('^\t', 'nw')
+    return 'tabs-4'
+  elseif search('^  \S', 'nw')
+    return 'spaces-2'
+  elseif search('^    \S', 'nw')
+    return 'spaces-4'
+  else
+    return ''
   endif
 endfunction
+
+augroup indentation
+  autocmd!
+  autocmd BufNewFile * call ApplyIndentationToBuffer(g:my.default_indentation)
+  autocmd FileType * call ApplyIndentationAuto()
+augroup END
+
+{{ if eq .machine "countercheck" -}}
+let g:my.default_indentation = 'spaces-2'
+{{- else }}
+let g:my.default_indentation = 'tabs-4'
 {{- end }}
 
-function! StatusLine()
-  " Very useful links for this stuff
-  " http://got-ravings.blogspot.com/2008/08/vim-pr0n-making-statuslines-that-own.html
-  " https://shapeshed.com/vim-statuslines/
-  set laststatus=2
-  set statusline=
-  set statusline+=\ 
-  set statusline+=%f\ 
-  set statusline+=%m
-  set statusline+=%h
-  set statusline+=%r
-  set statusline+=%=
-  set statusline+=%l:%c\ 
-endfunction
+call ApplyIndentationToBuffer(g:my.default_indentation)
 
-function! TabCompletion()
-  function! InsertTabWrapper()
-      let col = col('.') - 1
-      if !col
-          return "\<tab>"
-      endif
+set autoindent
+set smartindent
+set shiftwidth=0
+set softtabstop=-1
 
-      let char = getline('.')[col - 1]
-      if char =~ '\k'
-          " There's an identifier before the cursor, so complete the identifier.
-          return "\<c-p>"
-      else
-          return "\<tab>"
-      endif
-  endfunction
+nnoremap <Leader><Tab> :call CycleIndentation()<CR>
 
-  inoremap <expr> <tab> InsertTabWrapper()
-  inoremap <s-tab> <c-n>
-endfunction
+" ============================================================
+" TAB COMPLETION
+" ============================================================
 
-function! UsefulMappings()
-  function! QuickfixFilterInteractive()
-    let l:pattern = input('Filter quickfix entries (prefix ! to remove matches): ')
-    if empty(l:pattern)
-      echo "No pattern entered. Aborting."
-      return
+function! InsertTabWrapper()
+    let col = col('.') - 1
+    if !col
+        return "\<tab>"
     endif
 
-    " If pattern starts with !, invert the match and remove the !
-    let l:keep_matches = 1
-    if l:pattern[0] ==# '!'
-      let l:keep_matches = 0
-      let l:pattern = l:pattern[1:]
-    endif
-
-    let Matcher = {v ->
-          \ (has_key(v, 'filename') && v.filename =~ l:pattern)
-          \ || (has_key(v, 'bufnr') && bufname(v.bufnr) =~ l:pattern)
-          \ || (has_key(v, 'text') && v.text =~ l:pattern)
-          \ }
-
-    let l:filtered = l:keep_matches
-          \ ? filter(getqflist(), {_, v -> Matcher(v)})
-          \ : filter(getqflist(), {_, v -> !Matcher(v)})
-
-    call setqflist(l:filtered)
-    redraw
-    echo len(l:filtered) . " quickfix entries kept."
-  endfunction
-
-  function! GrepAndOpenQF()
-    let l:query = input('Grep for: ')
-
-    if empty(l:query)
-      return
-    endif
-
-    execute 'silent! grep! ' . shellescape(l:query)
-    redraw!
-
-    if len(getqflist()) > 0
-      copen
+    let char = getline('.')[col - 1]
+    if char =~ '\k'
+        " There's an identifier before the cursor, so complete the identifier.
+        return "\<c-p>"
     else
-      echo "No results found."
+        return "\<tab>"
     endif
-  endfunction
-
-  {{ if eq .machine "countercheck" -}}
-  function! SearchForImports()
-    let l:filename = fnamemodify(expand('%'), ':t:r')
-
-    execute 'silent! grep! import.*' . l:filename
-    redraw!
-
-    if len(getqflist()) > 0
-      copen
-    else
-      echo "No results found."
-    endif
-  endfunction
-  {{- end }}
-
-  nnoremap n nzz
-  nnoremap N Nzz
-  nnoremap * *zz
-
-  noremap <silent> <C-w>x :%!xxd<CR>
-  noremap <silent> <C-w>X :%!xxd -r<CR>
-  noremap <silent> <C-w>m :!man ./%<CR>
-  noremap <silent> <C-w>z :tabnew %<CR>
-
-  nnoremap <Leader>b :b 
-  nnoremap <Leader>f :find 
-
-  nnoremap <silent> <Leader>/ :call GrepAndOpenQF()<CR>
-  nnoremap <silent> <Leader>* :grep! <cword><CR><CR>:copen<CR>
-  nnoremap <silent> <Leader>cf :call QuickfixFilterInteractive()<CR>
-  nnoremap <silent> <Leader>c1 :cfirst<CR>
-  nnoremap <silent> <Leader>co :copen<CR>
-  nnoremap <silent> <Leader>cc :cclose<CR>
-  nnoremap <silent> <Up> :cprevious<CR>
-  nnoremap <silent> <Down> :cnext<CR>
-  nnoremap <silent> <Left> :colder<CR>
-  nnoremap <silent> <Right> :cnewer<CR>
-
-  nnoremap <Leader>gf :e client/<cfile>
-  {{- if eq .machine "countercheck" }}
-  nnoremap <silent> <Leader>gi :call SearchForImports()<CR>
-  {{- else }}
-  nnoremap <Leader>gi :echo "SearchForImports() is only implemented on countercheck for now"<CR>
-  {{- end }}
-
-  {{ if eq .machine "countercheck" -}}
-  nnoremap <silent> <Leader>C :botright call term_start('bash -c "cd ~/Workspace/chess && ./client/build/bin/build compile ' . get(g:, 'my').entries . '"', { 'term_name': 'compile', 'term_rows': 5, 'term_finish': 'close' })<CR><C-W>p
-  {{- end }}
-
-  " can i get what i want here by just doing :set clipboard=unnamedplus?
-  " maybe these leader commands aren't really that useful?
-  " see https://wiki.archlinux.org/title/Vim#Clipboard for more details
-  nnoremap <Leader>y "+y
-  vnoremap <Leader>y "+y
-
-  nnoremap <silent> <Leader>y% :let @+ = @%<CR>
-
-  {{- if eq .machine "countercheck" }}
-  nnoremap <silent> <Leader>yg :let @+="https://github.com/ChessCom/chess/tree/develop/" . expand('%') . "#L" . line(".")<CR>
-  {{- else }}
-  nnoremap <Leader>yg :echo "Quick GitHub linking is only implemented on countercheck for now"<CR>
-  {{- end }}
-
-  nnoremap <Leader>dd 0D
-
-  inoremap <C-C> <Esc>
-
-  nnoremap <silent> <Leader>e :e ~/.vimrc<CR>
-  nnoremap <silent> <Leader>v :source ~/.vimrc<CR>
-
-  nnoremap <Leader>: :%s/<C-R><C-W>//g<Left><Left>
-
-  nnoremap <silent> <Leader>gd :GitDiffDevelopArgs<CR>
-  nnoremap <silent> <Leader>vd :DiffHere<CR>
-
-  nnoremap <silent> <Leader><Leader> :nohlsearch<CR>
-
-  nnoremap <Leader>b/ ?function<CR>V/{<CR>%<ESC>/\%V
 endfunction
 
-call AutoReader()
-call ColorScheme()
-call Defaults()
-call Git()
-call Gui()
-call Indentation()
+inoremap <expr> <tab> InsertTabWrapper()
+inoremap <s-tab> <c-n>
+
+" ============================================================
+" SEARCH & NAVIGATION
+" ============================================================
+
+set hlsearch
+set incsearch
+
+nnoremap n nzz
+nnoremap N Nzz
+nnoremap * *zz
+
+nnoremap <silent> <Leader><Leader> :nohlsearch<CR>
+
+" ============================================================
+" QUICKFIX
+" ============================================================
+
+set grepprg=git\ grep\ -n\ $*
+
+function! QuickfixFilterInteractive()
+  let l:pattern = input('Filter quickfix entries (prefix ! to remove matches): ')
+  if empty(l:pattern)
+    echo "No pattern entered. Aborting."
+    return
+  endif
+
+  " If pattern starts with !, invert the match and remove the !
+  let l:keep_matches = 1
+  if l:pattern[0] ==# '!'
+    let l:keep_matches = 0
+    let l:pattern = l:pattern[1:]
+  endif
+
+  let Matcher = {v ->
+        \ (has_key(v, 'filename') && v.filename =~ l:pattern)
+        \ || (has_key(v, 'bufnr') && bufname(v.bufnr) =~ l:pattern)
+        \ || (has_key(v, 'text') && v.text =~ l:pattern)
+        \ }
+
+  let l:filtered = l:keep_matches
+        \ ? filter(getqflist(), {_, v -> Matcher(v)})
+        \ : filter(getqflist(), {_, v -> !Matcher(v)})
+
+  call setqflist(l:filtered)
+  redraw
+  echo len(l:filtered) . " quickfix entries kept."
+endfunction
+
+function! GrepAndOpenQF()
+  let l:query = input('Grep for: ')
+
+  if empty(l:query)
+    return
+  endif
+
+  execute 'silent! grep! ' . shellescape(l:query)
+  redraw!
+
+  if len(getqflist()) > 0
+    copen
+  else
+    echo "No results found."
+  endif
+endfunction
+
+nnoremap <silent> <Leader>/ :call GrepAndOpenQF()<CR>
+nnoremap <silent> <Leader>* :grep! <cword><CR><CR>:copen<CR>
+nnoremap <silent> <Leader>cf :call QuickfixFilterInteractive()<CR>
+nnoremap <silent> <Leader>c1 :cfirst<CR>
+nnoremap <silent> <Leader>co :copen<CR>
+nnoremap <silent> <Leader>cc :cclose<CR>
+nnoremap <silent> <Up> :cprevious<CR>
+nnoremap <silent> <Down> :cnext<CR>
+nnoremap <Left> :colder<CR>
+nnoremap <Right> :cnewer<CR>
+
+" ============================================================
+" GIT
+" ============================================================
+
+command! GitDiffDevelopArgs call setqflist(map(systemlist('git diff --name-only origin/develop...'), '{ "filename": v:val, "lnum": 1, "col": 1, "text": "" }')) | copen
+
+" DiffHere: left = <base_ref> blob (scratch), right = local file (focused).
+function! DiffHere(...) abort
+  " safe optional arg: first arg or default
+  let l:base_ref = get(a:000, 0, 'origin/develop')
+
+  " 1) Current buffer path
+  let l:cur = expand('%:p')
+  if empty(l:cur)
+    echoerr "DiffHere: current buffer has no filename"
+    return
+  endif
+
+  " 2) Directory to run git in (use file dir or cwd)
+  let l:dir = fnamemodify(l:cur, ':h')
+  if l:dir ==# '' | let l:dir = getcwd() | endif
+
+  " 3) Get repo root (capture stderr)
+  let l:cmd = 'git -C ' . fnameescape(l:dir) . ' rev-parse --show-toplevel 2>&1'
+  let l:root_out = systemlist(l:cmd)
+  if v:shell_error || empty(l:root_out)
+    let l:msg = empty(l:root_out) ? 'git failed with no output' : join(l:root_out, "\n")
+    echohl ErrorMsg
+    echom 'DiffHere: unable to determine git repo root for ' . l:dir . ' -- ' . l:msg
+    echohl None
+    return
+  endif
+  let l:root = fnamemodify(l:root_out[0], ':p')
+
+  " 4) Repo-relative path for git show
+  let l:rel = substitute(l:cur, '^' . escape(l:root, '\') , '', '')
+
+  " 5) Fetch blob from base_ref (capture stderr)
+  let l:showcmd = 'git --no-pager -C ' . fnameescape(l:root) . ' show ' . shellescape(l:base_ref . ':' . l:rel) . ' 2>&1'
+  let l:blob = systemlist(l:showcmd)
+  if v:shell_error
+    let l:errtext = join(l:blob, "\n")
+    echohl WarningMsg
+    echom 'DiffHere: git show failed: ' . l:errtext
+    echohl None
+    let l:blob = [''] " ensure we still create an empty buffer for diff
+  endif
+
+  execute 'tabnew'
+
+  " 6) Ensure we start by populating the left window with the base blob.
+  " Use enew to get a fresh buffer then set it to be scratch and populate it.
+  " (We avoid using vsplit first to keep deterministic left/right.)
+  execute 'enew'
+  setlocal buftype=nowrite bufhidden=wipe noswapfile nobuflisted
+  call setline(1, l:blob)
+  execute 'file ' . fnameescape('[' . l:base_ref . '] ' . l:rel)
+
+  " 7) Open the local file to the right explicitly (regardless of 'splitright')
+  " 'rightbelow vsplit' ensures the new window appears to the right of the current window.
+  execute 'rightbelow vsplit'
+  execute 'edit ' . fnameescape(l:cur)
+
+  " 8) Move focus to the right window (local file)
+  wincmd l
+
+  " 9) Enable diff mode if not already on
+  if &diff == 0
+    windo diffthis
+  endif
+
+  " 10) Jump to first diff hunk (in the right window)
+  silent! normal! ]c
+endfunction
+
+command! -nargs=? DiffHere call DiffHere(<f-args>)
+
+nnoremap <silent> <Leader>gd :GitDiffDevelopArgs<CR>
+nnoremap <silent> <Leader>vd :DiffHere<CR>
+
+" ============================================================
+" FILE NAVIGATION
+" ============================================================
+
+set wildmenu
+set wildmode=longest:full,full
+{{- if not (has "vim-old" .tags) }}
+set wildoptions=pum
+{{- end }}
+set wildignore+=**/node_modules/**,**/dist/**
+
+nnoremap <Leader>gf :e client/<cfile>
+
+{{ if eq .machine "countercheck" -}}
+function! SearchForImports()
+  let l:filename = fnamemodify(expand('%'), ':t:r')
+
+  execute 'silent! grep! import.*' . l:filename
+  redraw!
+
+  if len(getqflist()) > 0
+    copen
+  else
+    echo "No results found."
+  endif
+endfunction
+
+nnoremap <silent> <Leader>gi :call SearchForImports()<CR>
+{{- else }}
+nnoremap <Leader>gi :echo "SearchForImports() is only implemented on countercheck for now"<CR>
+{{- end }}
+
+nnoremap <Leader>b :b 
+nnoremap <Leader>f :find 
+
 {{- if eq .machine "countercheck" }}
-call Path()
+
+" ============================================================
+" PROJECT PATH
+" ============================================================
+
+function! IgnoreFirstDirectory(fname)
+  return join(split(a:fname, '/')[1:], '/')
+endfunction
+
+let pwd = getcwd()
+
+if pwd =~ "Workspace/chess"
+  let pathsWeCareAbout = ["/client/web/**", "/client/shared/**", "/client/tests/**", "/client/types/**", "/src/Chess/WebBundle/**", "/src/Chess/CoreBundle/**"]
+  let &path = join(map(pathsWeCareAbout, { i, path -> pwd .. path}), ',')
+
+  set includeexpr=IgnoreFirstDirectory(v:fname)
+  set grepprg=git\ grep\ -n\ $*\ --\ ':!*translations*'\ ':!*js_routes*'\ ':!*release-history.md*'
+endif
+
+" ============================================================
+" BUILD
+" ============================================================
+
+nnoremap <silent> <Leader>C :botright call term_start('bash -c "cd ~/Workspace/chess && ./client/build/bin/build compile ' . get(g:, 'my').entries . '"', { 'term_name': 'compile', 'term_rows': 5, 'term_finish': 'close' })<CR><C-W>p
 {{- end }}
-call StatusLine()
-call TabCompletion()
-call UsefulMappings()
+
+" ============================================================
+" CLIPBOARD
+" ============================================================
+
+" can i get what i want here by just doing :set clipboard=unnamedplus?
+" maybe these leader commands aren't really that useful?
+" see https://wiki.archlinux.org/title/Vim#Clipboard for more details
+nnoremap <Leader>y "+y
+vnoremap <Leader>y "+y
+
+nnoremap <silent> <Leader>y% :let @+ = @%<CR>
+
+{{- if eq .machine "countercheck" }}
+nnoremap <silent> <Leader>yg :let @+="https://github.com/ChessCom/chess/tree/develop/" . expand('%') . "#L" . line(".")<CR>
+{{- else }}
+nnoremap <Leader>yg :echo "Quick GitHub linking is only implemented on countercheck for now"<CR>
+{{- end }}
+
+" ============================================================
+" VIMRC EDITING
+" ============================================================
+
+nnoremap <silent> <Leader>e :e ~/.vimrc<CR>
+nnoremap <silent> <Leader>v :source ~/.vimrc<CR>
+
+" ============================================================
+" MISC
+" ============================================================
+
+nnoremap <Leader>dd 0D
+
+inoremap <C-C> <Esc>
+
+nnoremap <Leader>: :%s/<C-R><C-W>//g<Left><Left>
+
+nnoremap <Leader>b/ ?function<CR>V/{<CR>%<ESC>/\%V
