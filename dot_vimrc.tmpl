@@ -393,7 +393,9 @@ function! UsefulMappings()
   nnoremap <Leader>gi :echo "SearchForImports() is only implemented on countercheck for now"<CR>
   {{- end }}
 
-  nnoremap <silent> <Leader>C :call term_start('bash -c "cd ~/Workspace/chess && ./client/build/bin/build compile ' . get(g:, 'entries') . '"', { 'term_name': 'compile', 'term_rows': 5, 'term_finish': 'close' })<CR><C-W>p
+  {{ if eq .machine "countercheck" -}}
+  nnoremap <silent> <Leader>C :botright call term_start('bash -c "cd ~/Workspace/chess && ./client/build/bin/build compile ' . get(g:, 'my').entries . '"', { 'term_name': 'compile', 'term_rows': 5, 'term_finish': 'close' })<CR><C-W>p
+  {{- end }}
 
   " can i get what i want here by just doing :set clipboard=unnamedplus?
   " maybe these leader commands aren't really that useful?
