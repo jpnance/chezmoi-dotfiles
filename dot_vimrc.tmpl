@@ -423,11 +423,11 @@ function! IgnoreFirstDirectory(fname)
   return join(split(a:fname, '/')[1:], '/')
 endfunction
 
-let pwd = getcwd()
+let s:pwd = getcwd()
 
-if pwd =~ "Workspace/chess"
+if s:pwd =~ "Workspace/chess"
   let pathsWeCareAbout = ["/client/web/**", "/client/shared/**", "/client/tests/**", "/client/types/**", "/src/Chess/WebBundle/**", "/src/Chess/CoreBundle/**"]
-  let &path = join(map(pathsWeCareAbout, { i, path -> pwd .. path}), ',')
+  let &path = join(map(pathsWeCareAbout, { i, path -> s:pwd .. path}), ',')
 
   set includeexpr=IgnoreFirstDirectory(v:fname)
   set grepprg=git\ grep\ -n\ $*\ --\ ':!*translations*'\ ':!*js_routes*'\ ':!*release-history.md*'
