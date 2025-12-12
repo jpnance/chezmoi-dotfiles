@@ -197,7 +197,8 @@ endfunction
 function! Indentation()
   augroup indentation
     autocmd!
-    autocmd BufNewFile,BufRead * call ApplyIndentationAuto()
+    autocmd BufNewFile * call ApplyIndentationToBuffer(g:my.default_indentation)
+    autocmd FileType * call ApplyIndentationAuto()
   augroup END
 
   function! ApplyIndentationAuto()
