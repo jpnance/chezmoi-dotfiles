@@ -22,9 +22,9 @@ set path=,**
 syntax on
 set regexpengine=0
 
-{{ if not (has "vim-old" .tags) -}}
-set jumpoptions=stack
-{{- end }}
+if v:version >= 900
+  set jumpoptions=stack
+endif
 
 " ============================================================
 " COLORSCHEME
@@ -46,10 +46,12 @@ set t_Co=256
 set background=dark
 {{- if eq .machine "cloudbreak" }}
 colorscheme blade_runner
-{{- else if has "vim-old" .tags }}
-colorscheme quiet_legacy
 {{- else }}
-colorscheme quiet
+if v:version >= 900
+  colorscheme quiet
+else
+  colorscheme quiet_legacy
+endif
 {{- end }}
 
 " ============================================================
@@ -61,13 +63,14 @@ set relativenumber
 set cursorline
 
 set list
-{{- if has "vim-old" .tags }}
 set listchars=tab:┊\ 
 set fillchars=vert:│,fold:-
-{{- else }}
-set listchars=leadmultispace:·\ ,tab:┊\ 
-set fillchars=vert:│,fold:-,eob:~,lastline:@
-{{- end }}
+if v:version >= 900
+  set listchars+=leadmultispace:·\ 
+  set fillchars=eob:~,lastline:@
+else
+  set listchars+=space:·
+end
 
 augroup cursorLineFocus
   autocmd!
@@ -384,9 +387,9 @@ nnoremap <silent> <Leader>vd :DiffHere<CR>
 
 set wildmenu
 set wildmode=longest:full,full
-{{- if not (has "vim-old" .tags) }}
-set wildoptions=pum
-{{- end }}
+if v:version >= 900
+  set wildoptions=pum
+endif
 set wildignore+=**/node_modules/**,**/dist/**
 
 nnoremap <Leader>gf :e client/<cfile>
