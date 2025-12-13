@@ -23,7 +23,7 @@ syntax on
 set regexpengine=0
 
 if v:version >= 900
-  set jumpoptions=stack
+	set jumpoptions=stack
 endif
 
 " ============================================================
@@ -38,7 +38,7 @@ let g:jellybeans_overrides = {
 \}
 
 if has('termguicolors') && &termguicolors
-  let g:jellybeans_overrides['background']['guibg'] = 'none'
+	let g:jellybeans_overrides['background']['guibg'] = 'none'
 endif
 
 set t_Co=256
@@ -48,9 +48,9 @@ set background=dark
 colorscheme blade_runner
 {{- else }}
 if v:version >= 900
-  colorscheme quiet
+	colorscheme quiet
 else
-  colorscheme quiet_legacy
+	colorscheme quiet_legacy
 endif
 {{- end }}
 
@@ -66,14 +66,14 @@ set list
 set listchars=tab:┊\ 
 set fillchars=vert:│,fold:-
 if v:version >= 900
-  set listchars+=leadmultispace:·\ 
-  set fillchars=eob:~,lastline:@
+	set listchars+=leadmultispace:·\ 
+	set fillchars=eob:~,lastline:@
 end
 
 augroup cursorLineFocus
-  autocmd!
-  autocmd WinEnter * :set cursorline
-  autocmd WinLeave * :set nocursorline
+	autocmd!
+	autocmd WinEnter * :set cursorline
+	autocmd WinLeave * :set nocursorline
 augroup END
 
 " ============================================================
@@ -86,8 +86,8 @@ set splitright
 set mouse=a
 
 augroup autoResizer
-  autocmd!
-  autocmd VimResized * exe "normal \<c-w>="
+	autocmd!
+	autocmd VimResized * exe "normal \<c-w>="
 augroup END
 
 noremap <silent> <C-w>x :%!xxd<CR>
@@ -114,8 +114,8 @@ set statusline+=%l:%c\
 " ============================================================
 
 augroup autoReader
-  autocmd!
-  autocmd CursorHold,InsertEnter,WinEnter,WinLeave * :checktime
+	autocmd!
+	autocmd CursorHold,InsertEnter,WinEnter,WinLeave * :checktime
 augroup END
 
 set autoread
@@ -126,14 +126,14 @@ set updatetime=1000
 " ============================================================
 
 augroup filetypePhp
-  autocmd!
-  autocmd FileType php :setlocal suffixesadd=.php
+	autocmd!
+	autocmd FileType php :setlocal suffixesadd=.php
 augroup END
 
 augroup filetypeTypescript
-  autocmd!
-  autocmd FileType typescript :setlocal suffixesadd=.ts,.d.ts,.tsx,.js,.jsx,.cjs,.mjs,.json
-  autocmd FileType typescript :setlocal formatoptions-=ro
+	autocmd!
+	autocmd FileType typescript :setlocal suffixesadd=.ts,.d.ts,.tsx,.js,.jsx,.cjs,.mjs,.json
+	autocmd FileType typescript :setlocal formatoptions-=ro
 augroup END
 
 " ============================================================
@@ -141,44 +141,44 @@ augroup END
 " ============================================================
 
 function! ApplyIndentationToBuffer(state)
-  if a:state == 'spaces-2'
-    setlocal expandtab tabstop=2
-  elseif a:state == 'spaces-4'
-    setlocal expandtab tabstop=4
-  elseif a:state == 'tabs-4'
-    setlocal noexpandtab tabstop=4
-  endif
+	if a:state == 'spaces-2'
+		setlocal expandtab tabstop=2
+	elseif a:state == 'spaces-4'
+		setlocal expandtab tabstop=4
+	elseif a:state == 'tabs-4'
+		setlocal noexpandtab tabstop=4
+	endif
 endfunction
 
 function! ApplyIndentationAuto()
-  let l:detected = DetectIndentation()
-  call ApplyIndentationToBuffer(l:detected != '' ? l:detected : g:my.default_indentation)
+	let l:detected = DetectIndentation()
+	call ApplyIndentationToBuffer(l:detected != '' ? l:detected : g:my.default_indentation)
 endfunction
 
 function! CycleIndentation()
-  let l:states = ['spaces-2', 'spaces-4', 'tabs-4']
-  let l:next_index = (index(l:states, g:my.default_indentation) + 1) % len(l:states)
-  let g:my.default_indentation = l:states[l:next_index]
-  call ApplyIndentationToBuffer(g:my.default_indentation)
-  echo 'Tab style: ' . g:my.default_indentation
+	let l:states = ['spaces-2', 'spaces-4', 'tabs-4']
+	let l:next_index = (index(l:states, g:my.default_indentation) + 1) % len(l:states)
+	let g:my.default_indentation = l:states[l:next_index]
+	call ApplyIndentationToBuffer(g:my.default_indentation)
+	echo 'Tab style: ' . g:my.default_indentation
 endfunction
 
 function! DetectIndentation()
-  if search('^\t', 'nw')
-    return 'tabs-4'
-  elseif search('^  \S', 'nw')
-    return 'spaces-2'
-  elseif search('^    \S', 'nw')
-    return 'spaces-4'
-  else
-    return ''
-  endif
+	if search('^\t', 'nw')
+		return 'tabs-4'
+	elseif search('^  \S', 'nw')
+		return 'spaces-2'
+	elseif search('^    \S', 'nw')
+		return 'spaces-4'
+	else
+		return ''
+	endif
 endfunction
 
 augroup indentation
-  autocmd!
-  autocmd BufNewFile * call ApplyIndentationToBuffer(g:my.default_indentation)
-  autocmd FileType * call ApplyIndentationAuto()
+	autocmd!
+	autocmd BufNewFile * call ApplyIndentationToBuffer(g:my.default_indentation)
+	autocmd FileType * call ApplyIndentationAuto()
 augroup END
 
 {{ if eq .machine "countercheck" -}}
@@ -201,18 +201,18 @@ nnoremap <Leader><Tab> :call CycleIndentation()<CR>
 " ============================================================
 
 function! InsertTabWrapper()
-    let col = col('.') - 1
-    if !col
-        return "\<tab>"
-    endif
+		let col = col('.') - 1
+		if !col
+				return "\<tab>"
+		endif
 
-    let char = getline('.')[col - 1]
-    if char =~ '\k'
-        " There's an identifier before the cursor, so complete the identifier.
-        return "\<c-p>"
-    else
-        return "\<tab>"
-    endif
+		let char = getline('.')[col - 1]
+		if char =~ '\k'
+				" There's an identifier before the cursor, so complete the identifier.
+				return "\<c-p>"
+		else
+				return "\<tab>"
+		endif
 endfunction
 
 inoremap <expr> <tab> InsertTabWrapper()
@@ -238,49 +238,49 @@ nnoremap <silent> <Leader><Leader> :nohlsearch<CR>
 set grepprg=git\ grep\ -n\ $*
 
 function! QuickfixFilterInteractive()
-  let l:pattern = input('Filter quickfix entries (prefix ! to remove matches): ')
-  if empty(l:pattern)
-    echo "No pattern entered. Aborting."
-    return
-  endif
+	let l:pattern = input('Filter quickfix entries (prefix ! to remove matches): ')
+	if empty(l:pattern)
+		echo "No pattern entered. Aborting."
+		return
+	endif
 
-  " If pattern starts with !, invert the match and remove the !
-  let l:keep_matches = 1
-  if l:pattern[0] ==# '!'
-    let l:keep_matches = 0
-    let l:pattern = l:pattern[1:]
-  endif
+	" If pattern starts with !, invert the match and remove the !
+	let l:keep_matches = 1
+	if l:pattern[0] ==# '!'
+		let l:keep_matches = 0
+		let l:pattern = l:pattern[1:]
+	endif
 
-  let Matcher = {v ->
-        \ (has_key(v, 'filename') && v.filename =~ l:pattern)
-        \ || (has_key(v, 'bufnr') && bufname(v.bufnr) =~ l:pattern)
-        \ || (has_key(v, 'text') && v.text =~ l:pattern)
-        \ }
+	let Matcher = {v ->
+				\ (has_key(v, 'filename') && v.filename =~ l:pattern)
+				\ || (has_key(v, 'bufnr') && bufname(v.bufnr) =~ l:pattern)
+				\ || (has_key(v, 'text') && v.text =~ l:pattern)
+				\ }
 
-  let l:filtered = l:keep_matches
-        \ ? filter(getqflist(), {_, v -> Matcher(v)})
-        \ : filter(getqflist(), {_, v -> !Matcher(v)})
+	let l:filtered = l:keep_matches
+				\ ? filter(getqflist(), {_, v -> Matcher(v)})
+				\ : filter(getqflist(), {_, v -> !Matcher(v)})
 
-  call setqflist(l:filtered)
-  redraw
-  echo len(l:filtered) . " quickfix entries kept."
+	call setqflist(l:filtered)
+	redraw
+	echo len(l:filtered) . " quickfix entries kept."
 endfunction
 
 function! GrepAndOpenQF()
-  let l:query = input('Grep for: ')
+	let l:query = input('Grep for: ')
 
-  if empty(l:query)
-    return
-  endif
+	if empty(l:query)
+		return
+	endif
 
-  execute 'silent! grep! ' . shellescape(l:query)
-  redraw!
+	execute 'silent! grep! ' . shellescape(l:query)
+	redraw!
 
-  if len(getqflist()) > 0
-    copen
-  else
-    echo "No results found."
-  endif
+	if len(getqflist()) > 0
+		copen
+	else
+		echo "No results found."
+	endif
 endfunction
 
 nnoremap <silent> <Leader>/ :call GrepAndOpenQF()<CR>
@@ -302,71 +302,71 @@ command! GitDiffDevelopArgs call setqflist(map(systemlist('git diff --name-only 
 
 " DiffHere: left = <base_ref> blob (scratch), right = local file (focused).
 function! DiffHere(...) abort
-  " safe optional arg: first arg or default
-  let l:base_ref = get(a:000, 0, 'origin/develop')
+	" safe optional arg: first arg or default
+	let l:base_ref = get(a:000, 0, 'origin/develop')
 
-  " 1) Current buffer path
-  let l:cur = expand('%:p')
-  if empty(l:cur)
-    echoerr "DiffHere: current buffer has no filename"
-    return
-  endif
+	" 1) Current buffer path
+	let l:cur = expand('%:p')
+	if empty(l:cur)
+		echoerr "DiffHere: current buffer has no filename"
+		return
+	endif
 
-  " 2) Directory to run git in (use file dir or cwd)
-  let l:dir = fnamemodify(l:cur, ':h')
-  if l:dir ==# '' | let l:dir = getcwd() | endif
+	" 2) Directory to run git in (use file dir or cwd)
+	let l:dir = fnamemodify(l:cur, ':h')
+	if l:dir ==# '' | let l:dir = getcwd() | endif
 
-  " 3) Get repo root (capture stderr)
-  let l:cmd = 'git -C ' . fnameescape(l:dir) . ' rev-parse --show-toplevel 2>&1'
-  let l:root_out = systemlist(l:cmd)
-  if v:shell_error || empty(l:root_out)
-    let l:msg = empty(l:root_out) ? 'git failed with no output' : join(l:root_out, "\n")
-    echohl ErrorMsg
-    echom 'DiffHere: unable to determine git repo root for ' . l:dir . ' -- ' . l:msg
-    echohl None
-    return
-  endif
-  let l:root = fnamemodify(l:root_out[0], ':p')
+	" 3) Get repo root (capture stderr)
+	let l:cmd = 'git -C ' . fnameescape(l:dir) . ' rev-parse --show-toplevel 2>&1'
+	let l:root_out = systemlist(l:cmd)
+	if v:shell_error || empty(l:root_out)
+		let l:msg = empty(l:root_out) ? 'git failed with no output' : join(l:root_out, "\n")
+		echohl ErrorMsg
+		echom 'DiffHere: unable to determine git repo root for ' . l:dir . ' -- ' . l:msg
+		echohl None
+		return
+	endif
+	let l:root = fnamemodify(l:root_out[0], ':p')
 
-  " 4) Repo-relative path for git show
-  let l:rel = substitute(l:cur, '^' . escape(l:root, '\') , '', '')
+	" 4) Repo-relative path for git show
+	let l:rel = substitute(l:cur, '^' . escape(l:root, '\') , '', '')
 
-  " 5) Fetch blob from base_ref (capture stderr)
-  let l:showcmd = 'git --no-pager -C ' . fnameescape(l:root) . ' show ' . shellescape(l:base_ref . ':' . l:rel) . ' 2>&1'
-  let l:blob = systemlist(l:showcmd)
-  if v:shell_error
-    let l:errtext = join(l:blob, "\n")
-    echohl WarningMsg
-    echom 'DiffHere: git show failed: ' . l:errtext
-    echohl None
-    let l:blob = [''] " ensure we still create an empty buffer for diff
-  endif
+	" 5) Fetch blob from base_ref (capture stderr)
+	let l:showcmd = 'git --no-pager -C ' . fnameescape(l:root) . ' show ' . shellescape(l:base_ref . ':' . l:rel) . ' 2>&1'
+	let l:blob = systemlist(l:showcmd)
+	if v:shell_error
+		let l:errtext = join(l:blob, "\n")
+		echohl WarningMsg
+		echom 'DiffHere: git show failed: ' . l:errtext
+		echohl None
+		let l:blob = [''] " ensure we still create an empty buffer for diff
+	endif
 
-  execute 'tabnew'
+	execute 'tabnew'
 
-  " 6) Ensure we start by populating the left window with the base blob.
-  " Use enew to get a fresh buffer then set it to be scratch and populate it.
-  " (We avoid using vsplit first to keep deterministic left/right.)
-  execute 'enew'
-  setlocal buftype=nowrite bufhidden=wipe noswapfile nobuflisted
-  call setline(1, l:blob)
-  execute 'file ' . fnameescape('[' . l:base_ref . '] ' . l:rel)
+	" 6) Ensure we start by populating the left window with the base blob.
+	" Use enew to get a fresh buffer then set it to be scratch and populate it.
+	" (We avoid using vsplit first to keep deterministic left/right.)
+	execute 'enew'
+	setlocal buftype=nowrite bufhidden=wipe noswapfile nobuflisted
+	call setline(1, l:blob)
+	execute 'file ' . fnameescape('[' . l:base_ref . '] ' . l:rel)
 
-  " 7) Open the local file to the right explicitly (regardless of 'splitright')
-  " 'rightbelow vsplit' ensures the new window appears to the right of the current window.
-  execute 'rightbelow vsplit'
-  execute 'edit ' . fnameescape(l:cur)
+	" 7) Open the local file to the right explicitly (regardless of 'splitright')
+	" 'rightbelow vsplit' ensures the new window appears to the right of the current window.
+	execute 'rightbelow vsplit'
+	execute 'edit ' . fnameescape(l:cur)
 
-  " 8) Move focus to the right window (local file)
-  wincmd l
+	" 8) Move focus to the right window (local file)
+	wincmd l
 
-  " 9) Enable diff mode if not already on
-  if &diff == 0
-    windo diffthis
-  endif
+	" 9) Enable diff mode if not already on
+	if &diff == 0
+		windo diffthis
+	endif
 
-  " 10) Jump to first diff hunk (in the right window)
-  silent! normal! ]c
+	" 10) Jump to first diff hunk (in the right window)
+	silent! normal! ]c
 endfunction
 
 command! -nargs=? DiffHere call DiffHere(<f-args>)
@@ -381,7 +381,7 @@ nnoremap <silent> <Leader>vd :DiffHere<CR>
 set wildmenu
 set wildmode=longest:full,full
 if v:version >= 900
-  set wildoptions=pum
+	set wildoptions=pum
 endif
 set wildignore+=**/node_modules/**,**/dist/**
 
@@ -433,30 +433,30 @@ nnoremap <Leader>b/ ?function<CR>V/{<CR>%<ESC>/\%V
 " ============================================================
 
 function! IgnoreFirstDirectory(fname)
-  return join(split(a:fname, '/')[1:], '/')
+	return join(split(a:fname, '/')[1:], '/')
 endfunction
 
 function! SearchForImports()
-  let l:filename = fnamemodify(expand('%'), ':t:r')
+	let l:filename = fnamemodify(expand('%'), ':t:r')
 
-  execute 'silent! grep! import.*' . l:filename
-  redraw!
+	execute 'silent! grep! import.*' . l:filename
+	redraw!
 
-  if len(getqflist()) > 0
-    copen
-  else
-    echo "No results found."
-  endif
+	if len(getqflist()) > 0
+		copen
+	else
+		echo "No results found."
+	endif
 endfunction
 
 let s:pwd = getcwd()
 
 if s:pwd =~ "Workspace/chess"
-  let pathsWeCareAbout = ["/client/web/**", "/client/shared/**", "/client/tests/**", "/client/types/**", "/src/Chess/WebBundle/**", "/src/Chess/CoreBundle/**"]
-  let &path = join(map(pathsWeCareAbout, { i, path -> s:pwd .. path}), ',')
+	let pathsWeCareAbout = ["/client/web/**", "/client/shared/**", "/client/tests/**", "/client/types/**", "/src/Chess/WebBundle/**", "/src/Chess/CoreBundle/**"]
+	let &path = join(map(pathsWeCareAbout, { i, path -> s:pwd .. path}), ',')
 
-  set includeexpr=IgnoreFirstDirectory(v:fname)
-  set grepprg=git\ grep\ -n\ $*\ --\ ':!*translations*'\ ':!*js_routes*'\ ':!*release-history.md*'
+	set includeexpr=IgnoreFirstDirectory(v:fname)
+	set grepprg=git\ grep\ -n\ $*\ --\ ':!*translations*'\ ':!*js_routes*'\ ':!*release-history.md*'
 endif
 
 nnoremap gd "zyiw/import.*<C-R>z<CR>:nohlsearch<CR>f'gf/<C-R>z<CR>
