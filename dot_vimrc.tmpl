@@ -394,7 +394,7 @@ nnoremap <Leader>gf :e client/<cfile>
 nnoremap <Leader>b :b 
 nnoremap <Leader>f :find 
 
-{{- if not (eq .machine "countercheck") }}
+{{ if not (eq .machine "countercheck") -}}
 nnoremap <Leader>gi :echo "SearchForImports() is only implemented on countercheck for now"<CR>
 nnoremap <Leader>yg :echo "Quick GitHub linking is only implemented on countercheck for now"<CR>
 {{- end }}
