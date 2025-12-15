@@ -115,11 +115,11 @@ set statusline+=%l:%c\
 
 augroup autoReader
 	autocmd!
-	autocmd CursorHold,InsertEnter,WinEnter,WinLeave * :checktime
+	autocmd BufEnter,CursorHold,FocusGained,InsertEnter * :checktime
 augroup END
 
 set autoread
-set updatetime=1000
+set updatetime=100
 
 " ============================================================
 " FILETYPE-SPECIFIC
