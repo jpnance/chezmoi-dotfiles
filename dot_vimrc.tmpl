@@ -35,10 +35,6 @@ let g:jellybeans_overrides = {
 \ 'StatusLine': { 'guibg': '555555', 'guifg': 'ffffff' },
 \}
 
-if has('termguicolors') && &termguicolors
-	let g:jellybeans_overrides['background']['guibg'] = 'none'
-endif
-
 set t_Co=256
 
 set background=dark
