@@ -10,8 +10,6 @@ set nocompatible
 set nomodeline
 set modelines=0
 
-filetype plugin on
-
 set noswapfile
 
 delmarks!
@@ -177,13 +175,14 @@ endfunction
 
 augroup indentation
 	autocmd!
-	autocmd BufNewFile * call ApplyIndentationToBuffer(g:my.default_indentation)
 	autocmd FileType * call ApplyIndentationAuto()
 augroup END
 
+filetype plugin on
+
 {{ if eq .machine "countercheck" -}}
 let g:my.default_indentation = 'spaces-2'
-{{- else }}
+{{ else -}}
 let g:my.default_indentation = 'tabs-4'
 {{- end }}
 
