@@ -182,7 +182,7 @@ filetype plugin on
 
 {{ if eq .machine "countercheck" -}}
 let g:my.default_indentation = 'spaces-2'
-{{ else -}}
+{{- else -}}
 let g:my.default_indentation = 'tabs-4'
 {{- end }}
 
