@@ -472,7 +472,7 @@ function! GoToDefinition(cmd)
 	let l:symbol = expand('<cword>')
 	let l:content = join(getline(1, '$'), ' ')
 	
-	let l:pattern = "import\\s*\\(type\\s*\\)\\?{[^}]*\\<" . l:symbol . "\\>[^}]*}\\s*from\\s*['\"]\\zs[^'\"]*\\ze"
+	let l:pattern = "import\\s*\\(type\\s*\\)\\?[^;]*\\<" . l:symbol . "\\>[^;]*from\\s*['\"]\\zs[^'\"]*\\ze"
 	let l:path = matchstr(l:content, l:pattern)
 	
 	if empty(l:path)
