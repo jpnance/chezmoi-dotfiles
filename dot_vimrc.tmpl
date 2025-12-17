@@ -426,11 +426,11 @@ nnoremap <Leader>b/ ?function<CR>V/{<CR>%<ESC>/\%V
 
 function! GoToFile()
 	let l:fname = expand('<cfile>')
-	let l:resolved = ResolveAliases(l:fname)
+	let l:resolved = ResolveImport(l:fname)
 	execute 'edit ' . l:resolved
 endfunction
 
-function! ResolveAliases(fname)
+function! ResolveImport(fname)
 	let l:root = getcwd() . '/client'
 	let l:parts = split(a:fname, '/')
 
@@ -474,7 +474,7 @@ if s:pwd =~ "Workspace/chess"
 	let pathsWeCareAbout = ["/client/web/**", "/client/shared/**", "/client/tests/**", "/client/types/**", "/src/Chess/WebBundle/**", "/src/Chess/CoreBundle/**"]
 	let &path = join(map(pathsWeCareAbout, { i, path -> s:pwd .. path}), ',')
 
-	set includeexpr=ResolveAliases(v:fname)
+	set includeexpr=ResolveImport(v:fname)
 	set grepprg=git\ grep\ -n\ $*\ --\ ':!*translations*'\ ':!*js_routes*'\ ':!*release-history.md*'
 endif
 
