@@ -431,6 +431,22 @@ function! GoToFile(cmd)
 endfunction
 
 function! ResolveImport(fname)
+	let l:prefixes = ['shared/', 'web/core/', '']
+	let l:suffixes = ['', '.ts', '.d.ts', '.js', '.vue', '/index.ts', '/index.vue']
+
+	if a:fname =~ '^\.\.\?/'
+		let l:dir = expand('%:p:h')
+		let l:base = simplify(l:dir . '/' . a:fname)
+
+		for l:suffix in l:suffixes
+			if filereadable(l:base . l:suffix)
+				return l:base . l:suffix
+			endif
+		endfor
+
+		return l:base
+	endif
+
 	let l:root = getcwd() . '/client'
 	let l:parts = split(a:fname, '/')
 
@@ -439,9 +455,6 @@ function! ResolveImport(fname)
 		call insert(l:parts, 'dist', 1)
 		return l:root . '/node_modules/@chesscom/' . join(l:parts, '/')
 	endif
-
-	let l:prefixes = ['shared/', 'web/core/', '']
-	let l:suffixes = ['', '.ts', '.d.ts', '.js', '.vue', '/index.ts', '/index.vue']
 
 	for l:prefix in l:prefixes
 		for l:suffix in l:suffixes
