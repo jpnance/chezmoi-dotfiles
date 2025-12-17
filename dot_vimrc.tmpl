@@ -434,13 +434,13 @@ function! ResolveImport(fname)
 	let l:root = getcwd() . '/client'
 	let l:parts = split(a:fname, '/')
 
-	if l:parts[0] == 'chesscom'
+	if l:parts[0] == 'chesscom' || l:parts[0] == '@chesscom'
 		call remove(l:parts, 0)
 		call insert(l:parts, 'dist', 1)
 		return l:root . '/node_modules/@chesscom/' . join(l:parts, '/')
 	endif
 
-	let l:prefixes = ['shared/', '']
+	let l:prefixes = ['shared/', 'web/core/', '']
 	let l:suffixes = ['', '.ts', '.d.ts', '.js', '.vue', '/index.ts', '/index.vue']
 
 	for l:prefix in l:prefixes
