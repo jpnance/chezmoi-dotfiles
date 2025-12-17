@@ -424,10 +424,10 @@ nnoremap <Leader>b/ ?function<CR>V/{<CR>%<ESC>/\%V
 " CHESS PROJECT
 " ============================================================
 
-function! GoToFile()
+function! GoToFile(cmd)
 	let l:fname = expand('<cfile>')
 	let l:resolved = ResolveImport(l:fname)
-	execute 'edit ' . l:resolved
+	execute a:cmd . ' ' . l:resolved
 endfunction
 
 function! ResolveImport(fname)
@@ -468,6 +468,34 @@ function! SearchForImports()
 	endif
 endfunction
 
+function! GoToDefinition(cmd)
+	let l:symbol = expand('<cword>')
+	let l:content = join(getline(1, '$'), ' ')
+	
+	let l:pattern = "import\\s*\\(type\\s*\\)\\?{[^}]*\\<" . l:symbol . "\\>[^}]*}\\s*from\\s*['\"]\\zs[^'\"]*\\ze"
+	let l:path = matchstr(l:content, l:pattern)
+	
+	if empty(l:path)
+		echo "Could not find import for " . l:symbol
+		return
+	endif
+	
+	let l:resolved = ResolveImport(l:path)
+	
+	if isdirectory(l:resolved)
+		let l:matches = systemlist('grep -l "\b' . l:symbol . '\b" ' . shellescape(l:resolved) . '/* 2>/dev/null')
+		if len(l:matches) > 0
+			execute a:cmd . ' ' . l:matches[0]
+			call search('\<' . l:symbol . '\>')
+			return
+		endif
+		execute 'Explore ' . l:resolved
+	else
+		execute a:cmd . ' ' . l:resolved
+		call search('\<' . l:symbol . '\>')
+	endif
+endfunction
+
 let s:pwd = getcwd()
 
 if s:pwd =~ "Workspace/chess"
@@ -478,8 +506,10 @@ if s:pwd =~ "Workspace/chess"
 	set grepprg=git\ grep\ -n\ $*\ --\ ':!*translations*'\ ':!*js_routes*'\ ':!*release-history.md*'
 endif
 
-nnoremap gd "zyiw/import.*<C-R>z<CR>:nohlsearch<CR>f'gf/<C-R>z<CR>
-nnoremap gf :call GoToFile()<CR>
+nnoremap gd :call GoToDefinition('edit')<CR>
+nnoremap <C-W>d :call GoToDefinition('split')<CR>
+nnoremap gf :call GoToFile('edit')<CR>
+nnoremap <C-W>f :call GoToFile('split')<CR>
 
 nnoremap <silent> <Leader>gi :call SearchForImports()<CR>
 nnoremap <silent> <Leader>yg :let @+="https://github.com/ChessCom/chess/tree/develop/" . expand('%') . "#L" . line(".")<CR>
