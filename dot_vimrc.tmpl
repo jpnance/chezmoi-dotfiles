@@ -529,9 +529,9 @@ if s:pwd =~ "Workspace/chess"
 endif
 
 nnoremap gd :call GoToDefinition('edit')<CR>
-nnoremap <C-W>d :call GoToDefinition('split')<CR>
+nnoremap <C-W>d :call GoToDefinition('vsplit')<CR>
 nnoremap gf :call GoToFile('edit')<CR>
-nnoremap <C-W>f :call GoToFile('split')<CR>
+nnoremap <C-W>f :call GoToFile('vsplit')<CR>
 
 nnoremap <silent> <Leader>gi :call SearchForImports()<CR>
 nnoremap <silent> <Leader>yg :let @+="https://github.com/ChessCom/chess/tree/develop/" . expand('%') . "#L" . line(".")<CR>
