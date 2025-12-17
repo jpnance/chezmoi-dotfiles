@@ -427,7 +427,7 @@ nnoremap <Leader>b/ ?function<CR>V/{<CR>%<ESC>/\%V
 function! GoToFile(cmd)
 	let l:fname = expand('<cfile>')
 	let l:resolved = ResolveImport(l:fname)
-	execute a:cmd . ' ' . l:resolved
+	execute a:cmd . ' ' . fnamemodify(l:resolved, ':.')
 endfunction
 
 function! ResolveImport(fname)
@@ -503,13 +503,13 @@ function! GoToDefinition(cmd)
 	if isdirectory(l:resolved)
 		let l:matches = systemlist('grep -l "\b' . l:symbol . '\b" ' . shellescape(l:resolved) . '/* 2>/dev/null')
 		if len(l:matches) > 0
-			execute a:cmd . ' ' . l:matches[0]
+			execute a:cmd . ' ' . fnamemodify(l:matches[0]
 			call search('\<' . l:symbol . '\>')
 			return
 		endif
 		execute 'Explore ' . l:resolved
 	else
-		execute a:cmd . ' ' . l:resolved
+		execute a:cmd . ' ' . fnamemodify(l:resolved, ':.')
 		call search('\<' . l:symbol . '\>')
 	endif
 endfunction
