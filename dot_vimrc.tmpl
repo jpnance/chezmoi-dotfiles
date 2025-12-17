@@ -483,6 +483,11 @@ endfunction
 
 function! GoToDefinition(cmd)
 	let l:symbol = expand('<cword>')
+
+	if l:symbol =~ '-'
+		let l:symbol = KebabToPascal(l:symbol)
+	endif
+
 	let l:content = join(getline(1, '$'), ' ')
 	
 	let l:pattern = "import\\s*\\(type\\s*\\)\\?[^;]*\\<" . l:symbol . "\\>[^;]*from\\s*['\"]\\zs[^'\"]*\\ze"
@@ -507,6 +512,10 @@ function! GoToDefinition(cmd)
 		execute a:cmd . ' ' . l:resolved
 		call search('\<' . l:symbol . '\>')
 	endif
+endfunction
+
+function! KebabToPascal(str)
+	return substitute(a:str, '\(-\|^\)\([a-z]\)', '\u\2', 'g')
 endfunction
 
 let s:pwd = getcwd()
