@@ -424,20 +424,35 @@ nnoremap <Leader>b/ ?function<CR>V/{<CR>%<ESC>/\%V
 " CHESS PROJECT
 " ============================================================
 
+function! GoToFile()
+	let l:fname = expand('<cfile>')
+	let l:resolved = ResolveAliases(l:fname)
+	execute 'edit ' . l:resolved
+endfunction
+
 function! ResolveAliases(fname)
+	let l:root = getcwd() . '/client'
 	let l:parts = split(a:fname, '/')
 
 	if l:parts[0] == 'chesscom'
-		call insert(l:parts, join([getcwd(), 'client', 'node_modules'], '/'))
-
-		let l:parts[1] = '@chesscom'
-
-		call insert(l:parts, 'dist', -1)
-
-		call add(l:parts, 'index.d.ts')
+		call remove(l:parts, 0)
+		call insert(l:parts, 'dist', 1)
+		return l:root . '/node_modules/@chesscom/' . join(l:parts, '/')
 	endif
 
-	return join(l:parts, '/')
+	let l:prefixes = ['shared/', '']
+	let l:suffixes = ['', '.ts', '.d.ts', '.js', '.vue', '/index.ts', '/index.vue']
+
+	for l:prefix in l:prefixes
+		for l:suffix in l:suffixes
+			let l:candidate = l:root . '/' . l:prefix . a:fname . l:suffix
+			if filereadable(l:candidate)
+				return l:candidate
+			endif
+		endfor
+	endfor
+
+	return a:fname
 endfunction
 
 function! SearchForImports()
@@ -464,6 +479,7 @@ if s:pwd =~ "Workspace/chess"
 endif
 
 nnoremap gd "zyiw/import.*<C-R>z<CR>:nohlsearch<CR>f'gf/<C-R>z<CR>
+nnoremap gf :call GoToFile()<CR>
 
 nnoremap <silent> <Leader>gi :call SearchForImports()<CR>
 nnoremap <silent> <Leader>yg :let @+="https://github.com/ChessCom/chess/tree/develop/" . expand('%') . "#L" . line(".")<CR>
