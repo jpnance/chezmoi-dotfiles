@@ -503,7 +503,7 @@ function! GoToDefinition(cmd)
 	if isdirectory(l:resolved)
 		let l:matches = systemlist('grep -l "\b' . l:symbol . '\b" ' . shellescape(l:resolved) . '/* 2>/dev/null')
 		if len(l:matches) > 0
-			execute a:cmd . ' ' . fnamemodify(l:matches[0]
+			execute a:cmd . ' ' . fnamemodify(l:matches[0], ':.')
 			call search('\<' . l:symbol . '\>')
 			return
 		endif
