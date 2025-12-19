@@ -366,6 +366,18 @@ command! -nargs=? DiffHere call DiffHere(<f-args>)
 nnoremap <silent> <Leader>gd :GitDiffDevelopArgs<CR>
 nnoremap <silent> <Leader>vd :DiffHere<CR>
 
+function! YankGitHubLink()
+	let l:remote = trim(system('git remote get-url origin'))
+	let l:repo = substitute(l:remote, '.*github\.com[:/]\(.\{-}\)\(\.git\)\?$', '\1', '')
+
+	let l:head_ref = trim(system('git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null'))
+	let l:branch = substitute(l:head_ref, 'refs/remotes/origin/', '', '')
+
+	let @+ = 'https://github.com/' . l:repo . '/tree/' . l:branch . '/' . expand('%') . '#L' . line('.')
+endfunction
+
+nnoremap <silent> <Leader>yg :call YankGitHubLink()<CR>
+
 " ============================================================
 " FILE NAVIGATION
 " ============================================================
@@ -384,7 +396,6 @@ nnoremap <Leader>f :find
 
 {{ if not (eq .machine "countercheck") -}}
 nnoremap <Leader>gi :echo "SearchForImports() is only implemented on countercheck for now"<CR>
-nnoremap <Leader>yg :echo "Quick GitHub linking is only implemented on countercheck for now"<CR>
 {{- end }}
 
 " ============================================================
@@ -534,6 +545,5 @@ nnoremap gf :call GoToFile('edit')<CR>
 nnoremap <C-W>f :call GoToFile('vsplit')<CR>
 
 nnoremap <silent> <Leader>gi :call SearchForImports()<CR>
-nnoremap <silent> <Leader>yg :let @+="https://github.com/ChessCom/chess/tree/develop/" . expand('%') . "#L" . line(".")<CR>
 nnoremap <silent> <Leader>C :botright call term_start('bash -c "cd ~/Workspace/chess && ./client/build/bin/build compile ' . get(g:, 'my').entries . '"', { 'term_name': 'compile', 'term_rows': 5, 'term_finish': 'close' })<CR><C-W>p
 {{- end }}
