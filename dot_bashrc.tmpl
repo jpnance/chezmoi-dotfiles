@@ -189,7 +189,7 @@ function um() {
 
 {{- if eq .machine "countercheck" }}
 function trans() {
-	grep $* ~/Workspace/chess/app/Resources/assets/js/translations/messages.en_US.json
+	grep "$*" ~/Workspace/chess/app/Resources/assets/js/translations/messages.en_US.json
 }
 
 function route() {
