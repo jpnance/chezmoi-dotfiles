@@ -198,10 +198,19 @@ function route() {
 
 function branch() {
 	if [[ $# -eq 0 ]]; then
-		select branch in $(git branch | sed -e 's/[* ]//g'); do
-			git checkout $branch
-			break
-		done
+		selected_branch=$(
+			COLUMNS=1
+			PS3="branch> "
+
+			select branch in $(git branch | sed -e 's/[* ]//g'); do
+				echo "${branch}"
+				break
+			done
+		)
+
+		if [[ -n "${selected_branch}" ]]; then
+			git checkout "${selected_branch}"
+		fi
 	else
 		BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
 
