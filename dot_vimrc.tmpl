@@ -58,10 +58,10 @@ set cursorline
 
 set list
 set listchars=tab:┊\ 
-set fillchars=vert:│,fold:-
+set fillchars=vert:│
 if v:version >= 900
 	set listchars+=leadmultispace:·\ 
-	set fillchars=eob:~,lastline:@
+	set fillchars+=eob:~,lastline:@
 end
 
 augroup cursorLineFocus
@@ -69,6 +69,19 @@ augroup cursorLineFocus
 	autocmd WinEnter * :set cursorline
 	autocmd WinLeave * :set nocursorline
 augroup END
+
+" ============================================================
+" FOLDING
+" ============================================================
+
+function! CleanFoldText()
+	return getline(v:foldstart) . ' ... ' . trim(getline(v:foldend))
+endfunction
+
+set foldmethod=syntax
+set foldlevelstart=99
+set fillchars+=fold:\ 
+set foldtext=CleanFoldText()
 
 " ============================================================
 " WINDOWS & SPLITS
