@@ -1,5 +1,9 @@
 [user]
 	email = {{ .email }}
 	name = Patrick Nance
+
 [init]
 	defaultBranch = main
+
+[alias]
+    hardpull = !git fetch origin && git reset --hard origin/$(git rev-parse --abbrev-ref HEAD)
