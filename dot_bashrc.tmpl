@@ -212,12 +212,10 @@ function branch() {
 			git checkout "${selected_branch}"
 		fi
 	else
-		BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+		local new_branch_name=$(echo $* | sed -e "s/ /-/g")
 
-		new_branch_name=$(echo $* | sed -e "s/ /-/g")
-
-		if [ "${TICKET}" == "" ]; then
-			read -p "\$TICKET is blank. Create new branch anyway? [y/N]" -n 1 -r -s CHOICE
+		if [[ ! "${new_branch_name}" =~ CV-[0-9]{6} ]]; then
+			read -p "No ticket in branch name. Create anyway? [y/N]" -n 1 -r -s CHOICE
 			echo
 			echo
 
@@ -229,8 +227,6 @@ function branch() {
 					return
 					;;
 			esac
-		else
-			new_branch_name="${TICKET}-${new_branch_name}"
 		fi
 
 		git checkout -b PN/${new_branch_name}
@@ -238,49 +234,27 @@ function branch() {
 }
 
 function commit() {
-	BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+	local branch=$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+	local formatted_ticket=""
 
-	if [ "${TICKET}" == "" ]; then
-		read -p "\$TICKET is blank. Commit anyway? [y/N]" -n 1 -r -s CHOICE
-		echo
-		echo
-
-		case "${CHOICE}" in
-			y|Y)
-				formatted_ticket=""
-				;;
-
-			n|N|*)
-				return
-				;;
-		esac
-	elif [[ ! "${BRANCH}" =~ "${TICKET}" ]]; then
-		read -p "\$TICKET (${TICKET}) doesn't match the branch (${BRANCH}). Commit anyway? [y/N]" -n 1 -r -s CHOICE
-		echo
-		echo
-
-		case "${CHOICE}" in
-			y|Y)
-				formatted_ticket="${TICKET} - "
-				;;
-
-			n|N|*)
-				return
-				;;
-		esac
+	if [[ "${branch}" =~ (CV-[0-9]{6}) ]]; then
+		formatted_ticket="${BASH_REMATCH[1]} - "
 	else
-		formatted_ticket="${TICKET} - "
+		read -p "No ticket found in branch name. Commit anyway? [y/N]" -n 1 -r -s CHOICE
+		echo
+		echo
+
+		case "${CHOICE}" in
+			y|Y)
+				;;
+
+			n|N|*)
+				return
+				;;
+		esac
 	fi
 
 	git commit -m "${formatted_ticket}$*"
-}
-
-function ticket() {
-	if [ "$1" == "" ]; then
-		echo $TICKET
-	else
-		export TICKET=$1
-	fi
 }
 
 function chess() {
