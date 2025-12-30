@@ -17,7 +17,7 @@ alias lint-scripts="~/Workspace/chess/client/build/bin/build run ci:lint-scripts
 alias lint-styles="~/Workspace/chess/client/build/bin/build run ci:lint-styles"
 {{- end }}
 
-HISTCONTROL=ignoredups
+HISTCONTROL=ignoreboth
 PROMPT_COMMAND=set_bash_prompt
 
 {{- if eq .machine "lifeform" }}
