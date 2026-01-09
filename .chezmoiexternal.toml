@@ -1,0 +1,4 @@
+["bin/runt"]
+type = "file"
+url = "https://raw.githubusercontent.com/jpnance/runt/main/runt"
+executable = true

@@ -32,6 +32,10 @@ bin/brightness
 bin/note
 {{ end }}
 
+{{ if not (has "runt" .tags) }}
+bin/runt
+{{ end }}
+
 {{ if not (has "spectrwm" .tags) }}
 .spectrwm
 .spectrwm.conf
