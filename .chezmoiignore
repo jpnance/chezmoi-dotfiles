@@ -2,13 +2,13 @@
 .aerospace.toml
 {{ end }}
 
-{{ if not (has "battery" .tags) }}
-bin/battery
-{{ end }}
-
 {{ if not (has "bash" .tags) }}
 .bash_profile
 .bashrc
+{{ end }}
+
+{{ if not (has "battery" .tags) }}
+bin/battery
 {{ end }}
 
 {{ if not (has "brightness" .tags) }}
