@@ -15,6 +15,10 @@ bin/battery
 bin/brightness
 {{ end }}
 
+{{ if not (has "mrpretty" .tags) }}
+bin/mrpretty
+{{ end }}
+
 {{ if not (has "git" .tags) }}
 .gitconfig
 {{ end }}
