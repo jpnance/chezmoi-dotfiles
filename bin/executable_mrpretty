@@ -14,7 +14,7 @@ output=$(cat "$logfile")
 
 # Parse "finished restoring db.collection (N documents, M failures)" lines
 data=$(echo "$output" | grep "finished restoring" | \
-	sed 's/.*finished restoring [^.]*\.\([^ ]*\) (\([0-9]*\) document.*, \([0-9]*\) failure.*/\1 \2 \3/')
+	sed 's/.*finished restoring \([^ ]*\) (\([0-9]*\) document.*, \([0-9]*\) failure.*/\1 \2 \3/')
 
 col_count=$(echo "$data" | wc -l | tr -d ' ')
 total_failures=$(echo "$data" | awk '{s+=$3} END {print s+0}')
@@ -31,15 +31,8 @@ empty=$(echo "$data" | awk '$2 == 0 {print $1}' | paste -sd, -)
 
 echo ""
 
-# Sorted list with dot leaders
-echo "$data" | sort -t' ' -k2 -rn | awk '{
-	name = $1
-	docs = $2
-	dots = ""
-	pad = 24 - length(name)
-	for (i = 0; i < pad; i++) dots = dots "."
-	printf "  %s %s %\047d\n", name, dots, docs
-}'
+# Table with header and alphabetical list
+(echo "Collection ✓ ✗" && echo "---------- - -" && echo "$data" | sort) | column -t | sed 's/^/  /'
 
 echo ""
 echo "Total: $total_docs documents"
