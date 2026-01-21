@@ -20,6 +20,8 @@ alias lint-styles="~/Workspace/chess/client/build/bin/build run ci:lint-styles"
 HISTCONTROL=ignoreboth
 PROMPT_COMMAND=set_bash_prompt
 
+_CACHED_HOSTNAME=$(hostname -s)
+
 {{- if eq .machine "lifeform" }}
 source /usr/share/nvm/init-nvm.sh
 {{- end }}
@@ -84,7 +86,7 @@ function printPrompt() {
 	PREVIOUS_EXIT_CODE=$1
 
 	GIT=$(parse_git_branch)
-	HOST=$(hostname -s)
+	HOST=$_CACHED_HOSTNAME
 
 	TEXT_COLOR_HOST=82
 	TEXT_COLOR_DIRECTORY=81
