@@ -139,39 +139,28 @@ function terminalColor() {
 }
 
 function workingDirectory() {
-	HIERARCHY=($(echo $PWD \
-		| sed -e "s|^$HOME|~|" \
-		| sed -e "s| |!SPACE!|g" \
-		| sed -e "s|/| |g"
-	))
+	local path="${PWD/#$HOME/\~}"
+	local IFS='/'
+	local parts=($path)
+	local output="" i last=$((${#parts[@]} - 1))
 
-	OUTPUT=""
+	for i in "${!parts[@]}"; do
+		local part="${parts[$i]}"
+		[[ -z $part ]] && continue
 
-	if (( ${#HIERARCHY[@]} > 0 )); then
-		for i in $(seq 0 $((${#HIERARCHY[@]} - 1))); do
-			if [[ $i -eq 0 && "${HIERARCHY[$i]}" != "~" ]]; then
-				OUTPUT+="/"
-			fi
-
-			if (( $i > 0 )); then
-				OUTPUT+="/"
-			fi
-
-			if (( $i < $((${#HIERARCHY[@]} - 1)) )); then
-				if [[ ${HIERARCHY[$i]:0:1} =~ [^A-Za-z0-9] ]]; then
-					OUTPUT+="${HIERARCHY[$i]:0:2}"
-				else
-					OUTPUT+="${HIERARCHY[$i]:0:1}"
-				fi
+		if (( i < last )); then
+			if [[ ${part:0:1} =~ [^A-Za-z0-9] ]]; then
+				output+="/${part:0:2}"
 			else
-				OUTPUT+="${HIERARCHY[$i]//!SPACE!/ }"
+				output+="/${part:0:1}"
 			fi
-		done
-	else
-		OUTPUT+="/"
-	fi
+		else
+			output+="/${part}"
+		fi
+	done
 
-	echo -e "$OUTPUT"
+	[[ $path == /* ]] || output="${output:1}"  # strip leading / for relative paths
+	echo "${output:-/}"
 }
 
 function set_bash_prompt() {
