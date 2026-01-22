@@ -22,7 +22,7 @@ PROMPT_COMMAND=set_bash_prompt
 
 _CACHED_HOSTNAME=$(hostname -s)
 
-{{- if eq .machine "lifeform" }}
+{{- if has "nvm" .tags }}
 source /usr/share/nvm/init-nvm.sh
 {{- end }}
 
