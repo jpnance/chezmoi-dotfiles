@@ -8,7 +8,7 @@
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 
-{{- if eq .machine "countercheck" }}
+{{- if has "chesscom" .tags }}
 alias compile="~/Workspace/chess/client/build/bin/build compile"
 alias serve-cypress="~/Workspace/chess/client/build/bin/build serve --cypress -u"
 alias serve-docker="~/Workspace/chess/client/build/bin/build serve -u"
@@ -26,7 +26,7 @@ _CACHED_HOSTNAME=$(hostname -s)
 source /usr/share/nvm/init-nvm.sh
 {{- end }}
 
-{{- if eq .machine "countercheck" }}
+{{- if has "chesscom" .tags }}
 # this is really mac-specific stuff but we'll just leave it in the work bucket for now
 export CLICOLOR=1
 export LSCOLORS=ExGxxxxxCxxxxxxxxxxxxx
@@ -171,7 +171,7 @@ function um() {
 	cat ~/um/*$1*
 }
 
-{{- if eq .machine "countercheck" }}
+{{- if has "chesscom" .tags }}
 function trans() {
 	grep "$*" ~/Workspace/chess/app/Resources/assets/js/translations/messages.en_US.json
 }

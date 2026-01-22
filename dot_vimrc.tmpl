@@ -40,7 +40,7 @@ let g:jellybeans_overrides = {
 set t_Co=256
 
 set background=dark
-{{- if eq .machine "cloudbreak" }}
+{{- if has "production" .tags }}
 colorscheme blade_runner
 {{- else }}
 if v:version >= 900
@@ -190,7 +190,7 @@ augroup END
 
 filetype plugin on
 
-{{ if eq .machine "countercheck" -}}
+{{ if has "chesscom" .tags -}}
 let g:my.default_indentation = 'spaces-2'
 {{- else -}}
 let g:my.default_indentation = 'tabs-4'
@@ -417,7 +417,7 @@ nnoremap <Leader>gf :e client/<cfile>
 nnoremap <Leader>b :b 
 nnoremap <Leader>f :find 
 
-{{ if not (eq .machine "countercheck") -}}
+{{ if not (has "chesscom" .tags) -}}
 nnoremap <Leader>gi :echo "SearchForImports() is only implemented on countercheck for now"<CR>
 {{- end }}
 
@@ -452,7 +452,7 @@ nnoremap <Leader>: :%s/<C-R><C-W>//g<Left><Left>
 
 nnoremap <Leader>b/ ?function<CR>V/{<CR>%<ESC>/\%V
 
-{{- if eq .machine "countercheck" }}
+{{- if has "chesscom" .tags }}
 
 " ============================================================
 " CHESS PROJECT

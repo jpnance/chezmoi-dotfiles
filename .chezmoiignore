@@ -23,7 +23,7 @@ bin/mrpretty
 .config/git
 .config/git/config
 
-{{ if not (eq .machine "countercheck") }}
+{{ if not (has "chesscom" .tags) }}
 .config/git/work
 {{ end }}
 {{ end }}

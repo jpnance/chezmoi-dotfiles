@@ -6,7 +6,7 @@ if [[ ":$PATH:" != *":$HOME/bin:"* ]]; then
 	export PATH=$HOME/bin:$PATH
 fi
 
-{{- if eq .machine "countercheck" }}
+{{- if has "chesscom" .tags }}
 if [[ ":$PATH:" != *":/opt/homebrew/bin:"* ]]; then
 	export PATH=/opt/homebrew/bin:$PATH
 fi

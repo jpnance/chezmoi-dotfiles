@@ -22,9 +22,9 @@ font_family      Victor Mono
 #:     italic_font      Operator Mono Book Italic
 #:     bold_italic_font Operator Mono Medium Italic
 
-{{- if eq .machine "countercheck" }}
+{{- if has "chesscom" .tags }}
 font_size 18.0
-{{- else if eq .machine "lifeform" }}
+{{- else }}
 font_size 12.0
 {{- end }}
 

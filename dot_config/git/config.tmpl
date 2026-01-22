@@ -8,7 +8,7 @@
 [alias]
 	hardpull = !git fetch origin && git reset --hard origin/$(git rev-parse --abbrev-ref HEAD)
 
-{{ if eq .machine "countercheck" -}}
+{{ if has "chesscom" .tags -}}
 [includeIf "hasconfig:remote.*.url:git@github.com:ChessCom/**"]
 	path = ~/.config/git/work
 {{ end -}}
