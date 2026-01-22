@@ -28,7 +28,7 @@ bin/mrpretty
 {{ end }}
 
 {{ if not (has "kitty" .tags) }}
-.config
+.config/kitty
 .config/kitty/**
 {{ end }}
 
