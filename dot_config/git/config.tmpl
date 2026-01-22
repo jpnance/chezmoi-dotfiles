@@ -2,8 +2,10 @@
 	email = jpnance@gmail.com
 	name = Patrick Nance
 
+{{ if not (has "git-old" .tags) -}}
 [init]
 	defaultBranch = main
+{{ end -}}
 
 [alias]
 	hardpull = !git fetch origin && git reset --hard origin/$(git rev-parse --abbrev-ref HEAD)
