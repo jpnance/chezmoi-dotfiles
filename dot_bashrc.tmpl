@@ -38,6 +38,10 @@ export CHESS=~/Workspace/chess
 export TESTS=~/Workspace/chess/client/tests
 {{- end }}
 
+{{- if has "production" .tags }}
+ALL_REPOS="BBGPBG Coinflipper CoinflipperLogin SummerClassics SubContest pickahit PSO ProWriterAlpha"
+{{- end }}
+
 BOLD="\[\e[1m\]"
 RESET_COLORS="\[\e[0m\]"
 
