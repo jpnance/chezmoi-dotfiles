@@ -2,3 +2,9 @@
 type = "file"
 url = "https://raw.githubusercontent.com/jpnance/runt/main/runt"
 executable = true
+
+{{ if has "production" .tags }}
+[".local/share/coinops"]
+type = "git-repo"
+url = "https://github.com/jpnance/CoinOps"
+{{ end }}
