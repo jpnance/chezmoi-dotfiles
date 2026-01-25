@@ -15,7 +15,7 @@ bin/battery
 bin/brightness
 {{ end }}
 
-{{ if not (has "production" .tags) }}
+{{ if not (has "coinops" .tags) }}
 bin/coinops
 {{ end }}
 
