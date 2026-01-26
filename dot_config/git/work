@@ -1,2 +1,5 @@
 [user]
 	email = patrick.nance@chess.com
+
+[alias]
+	chessgrep = "!f() { git grep -n \"$@\" -- ':!*translations*' ':!*js_routes*' ':!*release-history.md*'; }; f"
