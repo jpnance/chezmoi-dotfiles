@@ -10,6 +10,10 @@ fi
 if [[ ":$PATH:" != *":/opt/homebrew/bin:"* ]]; then
 	export PATH=/opt/homebrew/bin:$PATH
 fi
+
+if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+	export PATH=$HOME/.local/bin:$PATH
+fi
 {{- end }}
 
 [[ -f ~/.bashrc ]] && . ~/.bashrc
