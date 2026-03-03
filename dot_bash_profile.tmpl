@@ -14,6 +14,16 @@ fi
 if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
 	export PATH=$HOME/.local/bin:$PATH
 fi
+
+if [ -f '/Users/jpnance/Downloads/google-cloud-sdk/path.bash.inc' ]; then
+	. '/Users/jpnance/Downloads/google-cloud-sdk/path.bash.inc'
+fi
+
+if [ -f '/Users/jpnance/Downloads/google-cloud-sdk/completion.bash.inc' ]; then
+	. '/Users/jpnance/Downloads/google-cloud-sdk/completion.bash.inc'
+fi
+
+export MULTI_REPO_ROOT="/Users/jpnance/Workspace"
 {{- end }}
 
 [[ -f ~/.bashrc ]] && . ~/.bashrc
