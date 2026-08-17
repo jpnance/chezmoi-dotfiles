@@ -36,6 +36,11 @@ export DOCKER_CLI_HINTS=false
 # these are convenient sometimes
 export CHESS=~/Workspace/chess
 export TESTS=~/Workspace/chess/client/tests
+
+# this has nothing to do with work but I feel myself wanting it on this computer
+export PSO=~/Workspace/PSO
+export SUBCONTEST=~/Workspace/SubContest
+export CLASSIX=~/Workspace/SummerClassics
 {{- end }}
 
 {{- if has "production" .tags }}
@@ -247,6 +252,18 @@ function commit() {
 
 function chess() {
 	cd ${CHESS}
+}
+
+function classix() {
+	cd ${CLASSIX}
+}
+
+function pso() {
+	cd ${PSO}
+}
+
+function subcontest() {
+	cd ${SUBCONTEST}
 }
 
 function watcher() {
