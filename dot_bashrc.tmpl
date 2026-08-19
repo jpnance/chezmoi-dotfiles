@@ -38,9 +38,10 @@ export CHESS=~/Workspace/chess
 export TESTS=~/Workspace/chess/client/tests
 
 # this has nothing to do with work but I feel myself wanting it on this computer
+export CLASSIX=~/Workspace/SummerClassics
 export PSO=~/Workspace/PSO
 export SUBCONTEST=~/Workspace/SubContest
-export CLASSIX=~/Workspace/SummerClassics
+export UNG=~/Workspace/UNG
 {{- end }}
 
 {{- if has "production" .tags }}
@@ -264,6 +265,10 @@ function pso() {
 
 function subcontest() {
 	cd ${SUBCONTEST}
+}
+
+function ung() {
+	cd ${UNG}
 }
 
 function watcher() {
