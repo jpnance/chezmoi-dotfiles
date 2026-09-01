@@ -293,3 +293,7 @@ if [[ -r $HOME/.nvm/nvm.sh ]]; then
 	. $HOME/.nvm/nvm.sh
 fi
 {{- end }}
+
+{{- if has "runt" .tags }}
+eval "$(runt completion bash)"
+{{- end }}
