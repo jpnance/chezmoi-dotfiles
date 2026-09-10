@@ -1,7 +1,9 @@
+{{ if has "runt" .tags }}
 ["bin/runt"]
 type = "file"
 url = "https://raw.githubusercontent.com/jpnance/runt/main/runt"
 executable = true
+{{ end }}
 
 {{ if has "coinops" .tags }}
 [".local/share/coinops"]
